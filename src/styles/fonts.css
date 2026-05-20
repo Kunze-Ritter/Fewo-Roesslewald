@@ -1,0 +1,47 @@
+/**
+ * Lokale Variable Fonts — dieselben .woff2 wie später in WP/ACSS.
+ * Fraunces: latin-ext (Überschriften, wght)
+ * Source Sans 3: latin (Fließtext, wght)
+ */
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/Fraunces-VariableFont_wght.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("/fonts/SourceSans3-VariableFont_wght.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * ACSS-Export: Family ohne Quotes + lädt nach fonts.css (Import-Reihenfolge in main.js).
+ * Variable Source Sans: Standard-Achse wght = 200 — ohne Variation wirkt der Text zu dünn
+ * oder „falsch“. font-weight allein koppelt in manchen Fällen nicht zuverlässig an wght.
+ */
+:root {
+  --text-font-family: "Source Sans 3", sans-serif;
+  --heading-font-family: "Fraunces", serif;
+  --text-font-variation-settings: "wght" var(--text-font-weight, 400);
+  --heading-font-variation-settings: "wght" var(--heading-font-weight, 500);
+}
+
+:where(body) {
+  font-family: var(--text-font-family);
+  font-variation-settings: var(--text-font-variation-settings);
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--heading-font-family);
+  font-variation-settings: var(--heading-font-variation-settings);
+}
+
+:where(.btn--primary, .btn--secondary) {
+  font-variation-settings: "wght" 600;
+}

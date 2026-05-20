@@ -1,0 +1,26 @@
+/* Video.js v10 — Einbettung in ACSS-Layout */
+
+.video-section {
+  padding-block: var(--section-space-m);
+}
+
+.video-player-wrap {
+  border-radius: calc(var(--radius) * 1.5);
+  overflow: hidden;
+  background: var(--base-dark);
+  aspect-ratio: 16 / 9;
+  box-shadow: 0 20px 48px rgb(26 35 32 / 0.14);
+}
+
+.fewo-video-player {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fewo-video-player video-skin {
+  display: block;
+  width: 100%;
+  height: 100%;
+  --media-object-fit: cover;
+}

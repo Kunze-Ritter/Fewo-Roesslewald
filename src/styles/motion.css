@@ -1,0 +1,61 @@
+/* Motion — Initialzustände
+ * Reine Compositor-Properties (transform, opacity, filter) für 60fps+.
+ * Headline-Kinder: zusätzlicher blur(10px) für "Editorial"-Fade-In.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Section-Block reveals (volle Container) */
+  [data-motion-reveal],
+  [data-motion-stagger] > *,
+  [data-motion-reveal-scale],
+  [data-motion-hero-media] {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  /* Headline-Stack-Kinder — gestaffelter Blur-Reveal */
+  .home-hero__intro > .home-kicker,
+  .home-hero__intro > .home-hero__title,
+  .home-hero__intro > .home-hero__lead,
+  .home-hero__intro > .home-hero__cta,
+  [data-motion-reveal] > .home-kicker,
+  [data-motion-reveal] > .home-h1,
+  [data-motion-reveal] > .home-h2,
+  [data-motion-reveal] > .home-lead,
+  [data-motion-reveal] > .home-closing__title,
+  [data-motion-reveal] > .home-hero__lead,
+  [data-motion-reveal] > .home-hero__cta,
+  [data-motion-reveal] > .btn--outline {
+    opacity: 0;
+    transform: translateY(1.125rem);
+    filter: blur(10px);
+    will-change: transform, opacity, filter;
+  }
+
+  [data-motion-header] {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+
+  /* Scroll-gebundener Zoom (z. B. Video-Frame) */
+  [data-motion-zoom-scroll] {
+    transform: scale(0.88);
+    transform-origin: center center;
+    will-change: transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__intro > *,
+  [data-motion-reveal],
+  [data-motion-reveal] > *,
+  [data-motion-stagger] > *,
+  [data-motion-reveal-scale],
+  [data-motion-hero-media],
+  [data-motion-header],
+  [data-motion-zoom-scroll] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

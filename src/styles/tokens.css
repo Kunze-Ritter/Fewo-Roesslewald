@@ -1,0 +1,70 @@
+/**
+ * FeWo Rösslewald — Design Tokens (ACSS 4.x aligned)
+ * @see docs/brand.md — Werte zum Eintragen im ACSS-Dashboard
+ * WP: Etch + ACSS (https://docs.etchwp.com/ · https://docs.automaticcss.com/)
+ * Responsive in Etch: Container Queries / Media Queries, keine festen Builder-Breakpoints
+ */
+
+:root {
+  /* ── Palette › Main Colors (Dashboard-Hex) ── */
+  --primary: #2f5d4a;
+  --primary-hover: #254a3b;
+  --secondary: #8b7355;
+  --base: #1a2320;
+  --neutral: #6b7280;
+  --white: #ffffff;
+  --bg: #f7f5f1;
+
+  /* Semantische Aliase (Prototyp) */
+  --text-color: var(--base);
+  --text-muted: var(--neutral);
+  --surface: var(--white);
+  --border-color: #e5e2dc;
+  --on-primary: var(--white);
+
+  /* ── Typography (Dashboard) ── */
+  --heading-font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  --text-font-family: "Source Sans 3", system-ui, -apple-system, sans-serif;
+
+  /* Fluid sizes — ACSS erzeugt diese; hier statische Näherung für den Prototyp */
+  --root-font-size: 100%;
+  --h1: clamp(2.25rem, 4vw, 3rem);
+  --h2: clamp(1.75rem, 3vw, 2.25rem);
+  --h3: 1.5rem;
+  --h4: 1.25rem;
+  --text-m: 1rem;
+  --text-s: 0.9375rem;
+  --text-xs: 0.8125rem;
+
+  --heading-line-height: 1.2;
+  --text-line-height: 1.6;
+  --heading-letter-spacing: -0.02em;
+
+  /* ── Spacing › Standard (Base 24px, Scale 1.5) ── */
+  --space-xs: 0.6875rem; /* ~11px */
+  --space-s: 1rem; /* 16px */
+  --space-m: 1.5rem; /* 24px — Base Spacing Desktop */
+  --space-l: 2.25rem; /* 36px */
+  --space-xl: 3.375rem; /* 54px */
+  --space-xxl: 5.0625rem; /* ~81px */
+
+  --section-space-m: var(--space-xl);
+  --section-space-l: var(--space-xxl);
+  --gutter: var(--space-m);
+
+  /* ── Layout › Website Dimensions ── */
+  --content-width: 75rem; /* 1200px */
+  --header-height: 4.5rem;
+
+  /* ── Borders ── */
+  --radius: 8px;
+  --border-size: 1px;
+  --border-style: solid;
+
+  /* ── Shadows (nicht ACSS-Core; Prototyp) ── */
+  --shadow-sm: 0 1px 3px rgb(26 35 32 / 0.06);
+  --shadow-md: 0 8px 24px rgb(26 35 32 / 0.08);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+}

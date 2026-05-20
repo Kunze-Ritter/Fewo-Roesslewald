@@ -1,0 +1,39 @@
+/* Barrierefreiheit — Fokus nur bei Tastatur, Hilfetexte */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus {
+  outline: none;
+}
+
+.user-is-tabbing :focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.user-is-tabbing .btn:focus-visible,
+.user-is-tabbing a:focus-visible {
+  outline-offset: 4px;
+}
+
+@media (forced-colors: active) {
+  .user-is-tabbing :focus-visible {
+    outline: 3px solid CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+}

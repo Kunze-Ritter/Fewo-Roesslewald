@@ -1,0 +1,108 @@
+.brand-header {
+  padding: var(--space-m);
+  border-bottom: var(--border-light);
+  background: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand-header__inner {
+  max-width: var(--content-width);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  flex-wrap: wrap;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+}
+
+.brand-logo__img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.brand-logo__eyebrow {
+  margin: 0;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dark-muted);
+}
+
+.brand-logo__title {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-size: var(--h3);
+  color: var(--text-dark);
+}
+
+.brand-main {
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding: var(--section-space-l) var(--gutter) var(--section-space-m);
+}
+
+.brand-kicker {
+  font-size: var(--text-s);
+  color: var(--text-dark-muted);
+  margin-bottom: var(--space-s);
+}
+
+.brand-lead {
+  max-width: 38rem;
+  color: var(--text-dark-muted);
+}
+
+.brand-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+  margin-top: var(--space-l);
+}
+
+.brand-section {
+  margin-top: var(--section-space-m);
+}
+
+.brand-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: var(--space-m);
+}
+
+.brand-quote {
+  margin-top: var(--section-space-m);
+  padding: var(--space-xl);
+  border-radius: var(--radius);
+}
+
+.brand-quote__text {
+  font-family: var(--heading-font-family);
+  font-size: var(--h4);
+  margin-bottom: var(--space-m);
+  max-width: 28rem;
+}
+
+.brand-quote__sub {
+  margin: 0;
+  font-size: var(--text-s);
+  opacity: 0.85;
+}
+
+.brand-note {
+  margin-top: var(--section-space-m);
+  padding: var(--space-m);
+  background: var(--white);
+  border: var(--border-light);
+  border-radius: var(--radius);
+  font-size: var(--text-s);
+  color: var(--text-dark-muted);
+}

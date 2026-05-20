@@ -1,0 +1,258 @@
+import {
+  SITE,
+  NAV,
+  USPS,
+  FEATURES,
+  APARTMENTS,
+  REVIEWS,
+  REGION,
+  BLOG,
+} from "../data/site.js";
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function navLink(item) {
+  const ext = item.external ? ' target="_blank" rel="noopener noreferrer"' : "";
+  const extHint = item.external
+    ? ' <span class="visually-hidden">(öffnet in neuem Tab)</span>'
+    : "";
+  return `<a href="${esc(item.href)}"${ext}>${esc(item.label)}${extHint}</a>`;
+}
+
+function bookLink(label, className = "btn--primary") {
+  return `<a class="${className}" href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">${esc(label)}<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>`;
+}
+
+export function renderHome(root) {
+  const amenities = [...USPS, ...FEATURES]
+    .map((a) => `<li>${esc(a.title)}</li>`)
+    .join("");
+
+  const gallery = SITE.img.gallery
+    .map(
+      (item, i) =>
+        `<img src="${esc(item.src)}" alt="${esc(item.alt)}" width="640" height="480" loading="${i === 0 ? "eager" : "lazy"}" decoding="async" />`,
+    )
+    .join("");
+
+  const apartments = APARTMENTS.map(
+    (apt) => `
+      <article class="home-room" id="wohnung-${esc(apt.slug)}">
+        <a class="home-room__media" href="#wohnung-${esc(apt.slug)}">
+          <img src="${esc(apt.image)}" alt="Ferienwohnung ${esc(apt.name)}" width="900" height="1100" loading="lazy" />
+        </a>
+        <div class="home-room__body">
+          <h3 class="home-room__title">${esc(apt.name)}</h3>
+          <p class="home-room__meta">${esc(apt.area)} · ${esc(apt.guests)}</p>
+          <p class="home-room__ideal">${esc(apt.ideal)}</p>
+          <a class="home-link" href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">Verfügbarkeit prüfen →<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>
+        </div>
+      </article>
+    `,
+  ).join("");
+
+  const reviews = REVIEWS.map(
+    (r) => `
+      <li class="home-quote">
+        <blockquote class="home-quote__text">
+          <p>${esc(r.quote)}</p>
+        </blockquote>
+        <footer class="home-quote__meta">
+          <cite class="home-quote__author">${esc(r.author)}</cite>
+          <span class="home-quote__context">${esc(r.context)}</span>
+        </footer>
+      </li>
+    `,
+  ).join("");
+
+  const region = REGION.map(
+    (r) => `
+      <a class="home-place" href="#umgebung">
+        <img src="${esc(r.image)}" alt="${esc(r.alt)}" width="600" height="750" loading="lazy" decoding="async" />
+        <span class="home-place__label">
+          <strong>${esc(r.title)}</strong>
+          <span>${esc(r.desc)}</span>
+        </span>
+      </a>
+    `,
+  ).join("");
+
+  const posts = BLOG.posts
+    .map(
+      (p) => `
+      <article class="home-journal__post">
+        <a class="home-journal__media" href="${esc(BLOG.ctaHref)}${esc(p.slug)}/" aria-labelledby="post-${esc(p.slug)}">
+          <img src="${esc(p.image)}" alt="${esc(p.imageAlt)}" width="800" height="600" loading="lazy" decoding="async" />
+        </a>
+        <div class="home-journal__body">
+          <p class="home-journal__meta">
+            <span class="home-journal__cat">${esc(p.category)}</span>
+            <span aria-hidden="true">·</span>
+            <span>${esc(String(p.readMinutes))} Min. Lesezeit</span>
+          </p>
+          <h3 id="post-${esc(p.slug)}" class="home-journal__title">
+            <a href="${esc(BLOG.ctaHref)}${esc(p.slug)}/">${esc(p.title)}</a>
+          </h3>
+          <p class="home-journal__excerpt">${esc(p.excerpt)}</p>
+          <a class="home-link" href="${esc(BLOG.ctaHref)}${esc(p.slug)}/">Weiterlesen →</a>
+        </div>
+      </article>
+    `,
+    )
+    .join("");
+
+  root.innerHTML = `
+    <div class="home">
+      <a class="skip-link" href="#main">Zum Inhalt</a>
+
+      <header class="home-header" data-motion-header>
+        <div class="home-shell home-header__row">
+          <a class="home-logo" href="/" aria-label="${esc(SITE.name)} — Startseite">${esc(SITE.name)}</a>
+          <nav class="home-nav" aria-label="Hauptnavigation">${NAV.map(navLink).join("")}</nav>
+          ${bookLink("Verfügbarkeit prüfen", "btn--primary home-header__cta")}
+          <button type="button" class="home-nav-toggle" aria-expanded="false" aria-controls="home-mobile-nav" aria-label="Menü">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+        <nav id="home-mobile-nav" class="home-mobile-nav" hidden aria-label="Mobile Navigation">
+          ${NAV.map(navLink).join("")}
+          ${bookLink("Verfügbarkeit prüfen", "btn--primary")}
+        </nav>
+      </header>
+
+      <main id="main">
+        <section class="home-hero">
+          <div class="home-shell home-hero__intro">
+            <p class="home-kicker">${esc(SITE.hero.rating)}</p>
+            <h1 class="home-hero__title">
+              ${esc(SITE.hero.title)}<br /><em>${esc(SITE.hero.titleEm)}</em>
+            </h1>
+            <p class="home-hero__lead">${esc(SITE.hero.lead)}</p>
+            <p class="home-hero__cta">
+              ${bookLink("Verfügbarkeit prüfen", "btn--primary")}
+            </p>
+          </div>
+          <figure class="home-hero__visual" data-motion-hero-media>
+            <img src="${esc(SITE.img.hero)}" alt="Ferienhaus am Rösslewald" width="1600" height="1000" fetchpriority="high" />
+          </figure>
+        </section>
+
+        <section id="ferienhaus" class="home-block" aria-labelledby="ferienhaus-heading">
+          <div class="home-shell home-about">
+            <div class="home-about__copy" data-motion-reveal>
+              <p class="home-kicker">${esc(SITE.story.label)}</p>
+              <h2 id="ferienhaus-heading" class="home-h2">${esc(SITE.story.heading)}</h2>
+              <p class="home-lead">${esc(SITE.story.body)}</p>
+              <a class="btn--secondary btn--outline" href="#video">Rundgang ansehen</a>
+            </div>
+            <div class="home-about__gallery" data-motion-reveal-scale role="group" aria-label="Impressionen vom Ferienhaus">${gallery}</div>
+          </div>
+        </section>
+
+        <section id="video" class="home-block home-block--dark" aria-labelledby="video-heading">
+          <div class="home-shell">
+            <header class="home-section-head home-section-head--center home-section-head--on-dark" data-motion-reveal>
+              <p class="home-kicker">${esc(SITE.video.kicker)}</p>
+              <h2 id="video-heading" class="home-h2 home-h2--center">
+                ${esc(SITE.video.heading)} <em>${esc(SITE.video.headingEm)}</em>
+              </h2>
+            </header>
+            <div class="video-player-wrap" data-motion-zoom-scroll>
+              <video-player class="fewo-video-player">
+                <video-skin>
+                  <img slot="poster" src="${esc(SITE.video.poster)}" alt="Vorschaubild: ${esc(SITE.video.title)}" width="1200" height="675" />
+                  <video src="${esc(SITE.video.src)}" title="${esc(SITE.video.title)}"></video>
+                </video-skin>
+              </video-player>
+            </div>
+          </div>
+        </section>
+
+        <section id="ausstattung" class="home-block" aria-labelledby="ausstattung-heading">
+          <div class="home-shell">
+            <div class="home-section-head" data-motion-reveal>
+              <p class="home-kicker">Ausstattung</p>
+              <h2 id="ausstattung-heading" class="home-h2">Was dieses Haus bietet</h2>
+            </div>
+            <ul class="home-amenities" data-motion-stagger>${amenities}</ul>
+          </div>
+        </section>
+
+        <section id="wohnungen" class="home-block" aria-labelledby="wohnungen-heading">
+          <div class="home-shell">
+            <header class="home-section-head home-section-head--center" data-motion-reveal>
+              <p class="home-kicker">Wohnungen</p>
+              <h2 id="wohnungen-heading" class="home-h2 home-h2--center">Zwei Wohnungen, ein Anspruch</h2>
+            </header>
+            <div class="home-rooms" data-motion-stagger>${apartments}</div>
+          </div>
+        </section>
+
+        <section id="umgebung" class="home-block" aria-labelledby="umgebung-heading">
+          <div class="home-shell">
+            <div class="home-section-head" data-motion-reveal>
+              <p class="home-kicker">Umgebung</p>
+              <h2 id="umgebung-heading" class="home-h2">Titisee, Feldberg, Wandern</h2>
+              <p class="home-lead home-lead--narrow">Morgens in die Natur — abends Ruhe am Rösslewald. Konus-Karte für ÖPNV inklusive.</p>
+            </div>
+            <div class="home-places" data-motion-stagger>${region}</div>
+          </div>
+        </section>
+
+        <section id="reisefuehrer" class="home-block" aria-labelledby="reisefuehrer-heading">
+          <div class="home-shell">
+            <header class="home-section-head home-section-head--center" data-motion-reveal>
+              <p class="home-kicker">${esc(BLOG.kicker)}</p>
+              <h2 id="reisefuehrer-heading" class="home-h2 home-h2--center">
+                ${esc(BLOG.heading)} <em>${esc(BLOG.headingEm)}</em>
+              </h2>
+              <p class="home-lead home-lead--narrow">${esc(BLOG.lead)}</p>
+            </header>
+            <div class="home-journal" data-motion-stagger>${posts}</div>
+            <p class="home-journal__cta" data-motion-reveal>
+              <a class="btn btn--outline" href="${esc(BLOG.ctaHref)}">${esc(BLOG.ctaLabel)} →</a>
+            </p>
+          </div>
+        </section>
+
+        <section id="bewertungen" class="home-block" aria-labelledby="bewertungen-heading">
+          <div class="home-shell">
+            <header class="home-section-head home-section-head--center" data-motion-reveal>
+              <p class="home-kicker">Gästestimmen</p>
+              <h2 id="bewertungen-heading" class="home-h2 home-h2--center">Was Gäste sagen</h2>
+            </header>
+            <ul class="home-quotes" data-motion-stagger>${reviews}</ul>
+          </div>
+        </section>
+
+        <section class="home-block home-block--cta" aria-labelledby="cta-heading">
+          <div class="home-shell home-closing" data-motion-reveal>
+            <h2 id="cta-heading" class="home-closing__title">Bereit für <em>den Schwarzwald?</em></h2>
+            ${bookLink("Verfügbarkeit prüfen", "btn--primary")}
+          </div>
+        </section>
+      </main>
+
+      <footer id="kontakt" class="home-footer">
+        <div class="home-shell home-footer__grid">
+          <p class="home-footer__brand">${esc(SITE.name)} · ${esc(SITE.tagline)}</p>
+          <nav class="home-footer__nav" aria-label="Footer">
+            <a href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener">Buchen</a>
+            <a href="#ferienhaus">Ferienhaus</a>
+            <a href="#wohnungen">Wohnungen</a>
+            <a href="#umgebung">Umgebung</a>
+            <a href="#reisefuehrer">Reiseführer</a>
+          </nav>
+          <p class="home-footer__legal">© ${new Date().getFullYear()} · <a href="#">Datenschutz</a> · <a href="#">Impressum</a></p>
+        </div>
+      </footer>
+    </div>
+  `;
+
+}

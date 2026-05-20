@@ -1,0 +1,19 @@
+/**
+ * Projekt-spezifische Ergänzungen — Tokens kommen aus ACSS (automatic.css).
+ */
+
+.swatch {
+  border-radius: var(--radius);
+  border: var(--border-light);
+  min-height: 4rem;
+}
+
+.swatch__label {
+  font-size: var(--text-xs);
+  color: var(--text-dark-muted);
+  margin-top: var(--space-s);
+}
+
+.swatch__label code {
+  font-size: 0.9em;
+}
