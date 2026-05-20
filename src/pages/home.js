@@ -29,6 +29,45 @@ function bookLink(label, className = "btn--primary") {
   return `<a class="${className}" href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">${esc(label)}<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>`;
 }
 
+function vistaSlide(slide, index, total) {
+  const srcset = [1280, 1920, 2560]
+    .map((w) => `/img/${slide.slug}-${w}.jpg ${w}w`)
+    .join(", ");
+  const src = `/img/${slide.slug}-1920.jpg`;
+  const isFirst = index === 0;
+  return `
+    <li class="home-vista__slide${isFirst ? " is-active" : ""}"
+        id="vista-slide-${index}"
+        role="group"
+        aria-roledescription="Slide"
+        aria-label="Slide ${index + 1} von ${total}: ${esc(slide.season)}"
+        aria-hidden="${isFirst ? "false" : "true"}"
+        data-slide-index="${index}"
+        data-season="${esc(slide.season)}"
+        data-caption="${esc(slide.caption)}"
+        data-location="${esc(slide.location)}">
+      <div class="home-vista__media-inner" data-motion-parallax>
+        <img src="${esc(src)}" srcset="${esc(srcset)}" sizes="100vw"
+             alt="${esc(slide.alt)}"
+             width="${slide.width}" height="${slide.height}"
+             ${isFirst ? 'fetchpriority="high"' : 'loading="lazy"'}
+             decoding="async" draggable="false" />
+      </div>
+    </li>
+  `;
+}
+
+function vistaCaptionMarkup(slides) {
+  const first = slides[0];
+  return `
+    <figcaption class="home-vista__caption" aria-live="polite" aria-atomic="true">
+      <span class="home-vista__season">${esc(first.season)}</span>
+      <span class="home-vista__caption-label">${esc(first.caption)}</span>
+      <span class="home-vista__caption-meta">${esc(first.location)}</span>
+    </figcaption>
+  `;
+}
+
 export function renderHome(root) {
   const amenities = [...USPS, ...FEATURES]
     .map((a) => `<li>${esc(a.title)}</li>`)
@@ -170,6 +209,74 @@ export function renderHome(root) {
           <figure class="home-hero__visual" data-motion-hero-media data-motion-curtain>
             <img src="${esc(SITE.img.hero)}" alt="Ferienhaus am Rösslewald" width="1600" height="1000" fetchpriority="high" />
             <span class="motion-curtain" aria-hidden="true"></span>
+          </figure>
+        </section>
+
+        <section class="home-vista"
+                 aria-roledescription="Carousel"
+                 aria-label="${esc(SITE.vista.label)}"
+                 data-vista-slider
+                 data-autoplay-ms="${SITE.vista.autoplayMs}">
+          <figure class="home-vista__media" data-motion-curtain>
+            <ol class="home-vista__slides">
+              ${SITE.vista.slides.map((s, i) => vistaSlide(s, i, SITE.vista.slides.length)).join("")}
+            </ol>
+            <span class="motion-curtain" aria-hidden="true"></span>
+
+            ${vistaCaptionMarkup(SITE.vista.slides)}
+
+            <div class="home-vista__controls" aria-label="Slider-Steuerung">
+              <button type="button"
+                      class="home-vista__nav home-vista__nav--prev"
+                      data-vista-prev
+                      aria-label="Voriges Bild">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+
+              <div class="home-vista__dots" role="tablist" aria-label="Bild wählen">
+                ${SITE.vista.slides.map((s, i) => `
+                  <button type="button"
+                          class="home-vista__dot${i === 0 ? " is-active" : ""}"
+                          role="tab"
+                          id="vista-tab-${i}"
+                          aria-controls="vista-slide-${i}"
+                          aria-selected="${i === 0 ? "true" : "false"}"
+                          tabindex="${i === 0 ? "0" : "-1"}"
+                          data-vista-goto="${i}">
+                    <span class="visually-hidden">${i + 1}: ${esc(s.season)}</span>
+                  </button>
+                `).join("")}
+              </div>
+
+              <button type="button"
+                      class="home-vista__nav home-vista__nav--next"
+                      data-vista-next
+                      aria-label="Nächstes Bild">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+
+              <button type="button"
+                      class="home-vista__playpause"
+                      data-vista-playpause
+                      aria-pressed="false"
+                      aria-label="Auto-Wechsel pausieren">
+                <svg class="home-vista__icon-pause" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                  <rect x="6" y="5" width="4" height="14" rx="1"/>
+                  <rect x="14" y="5" width="4" height="14" rx="1"/>
+                </svg>
+                <svg class="home-vista__icon-play" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="home-vista__progress" aria-hidden="true">
+              <span class="home-vista__progress-bar" data-vista-progress></span>
+            </div>
           </figure>
         </section>
 

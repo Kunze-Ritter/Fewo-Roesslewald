@@ -35,6 +35,14 @@
     transform: translateY(-0.35rem);
   }
 
+  /* Vista-Caption: wird vom Slider-JS pro Slide-Wechsel animiert.
+   * Initial-State wie Heading-Stack: blur + opacity + translateY. */
+  .home-vista__caption > * {
+    opacity: 0;
+    transform: translateY(1.125rem);
+    filter: blur(10px);
+  }
+
   /* Scroll-gebundener Zoom (z. B. Video-Frame) — Initialzustand
    * will-change steht hier permanent: 1 Element, kontinuierliche
    * Scroll-Bindung, keine Style-Writes im Mount-Path nötig. */
@@ -57,7 +65,9 @@
   [data-motion-curtain] > video,
   [data-motion-curtain] > .motion-curtain-target,
   [data-motion-curtain] > figure > img,
-  [data-motion-curtain] > a > img {
+  [data-motion-curtain] > a > img,
+  [data-motion-curtain] > [data-motion-parallax] > img,
+  [data-motion-curtain] [data-motion-parallax] > img {
     transform: scale(1.12);
   }
 
@@ -89,7 +99,8 @@
   [data-motion-header],
   [data-motion-zoom-scroll],
   [data-motion-curtain] img,
-  [data-motion-curtain] video {
+  [data-motion-curtain] video,
+  .home-vista__caption > * {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;

@@ -272,6 +272,273 @@ body {
   object-fit: cover;
 }
 
+/* ===========================================================================
+ * Vista-Slider — Atmosphären-Streifen direkt nach dem Hero
+ * Fullwidth · Cross-Fade · Auto-Advance · A11y-Carousel-Pattern
+ * =========================================================================== */
+.home-vista {
+  margin-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+  padding: 0;
+}
+
+.home-vista__media {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: clamp(26rem, 78vh, 48rem);
+  overflow: hidden;
+}
+
+/* Slides-Liste — alle Slides liegen übereinander, nur active = visible */
+.home-vista__slides {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.home-vista__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.home-vista__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Innerer Parallax-Wrapper — pro Slide */
+.home-vista__media-inner {
+  position: absolute;
+  top: -15%;
+  left: 0;
+  right: 0;
+  height: 130%;
+  will-change: transform;
+}
+
+.home-vista__media-inner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 45%;
+  user-select: none;
+}
+
+/* Subtiler Verlauf unten für Caption-Lesbarkeit — fix auf der äußeren Ebene */
+.home-vista__media::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 50%;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.25) 45%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Caption — folgt der Content-Breite (gleicher Container wie Headlines) */
+.home-vista__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(3.5rem, 7vw, 5rem);
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  box-sizing: border-box;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--white, #fff);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+
+.home-vista__season {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.3rem 0.7rem;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-shadow: none;
+  margin-bottom: 0.4rem;
+}
+
+.home-vista__caption-label {
+  font-family: var(--heading-font-family);
+  font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.home-vista__caption-meta {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.92;
+}
+
+/* Controls-Leiste — rechts unten, glas-look */
+.home-vista__controls {
+  position: absolute;
+  right: clamp(1rem, 4vw, 2.5rem);
+  bottom: clamp(1.25rem, 3.5vw, 2rem);
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+
+.home-vista__nav,
+.home-vista__playpause {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  color: var(--white, #fff);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+}
+
+.home-vista__nav:hover,
+.home-vista__playpause:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.home-vista__nav:focus-visible,
+.home-vista__playpause:focus-visible,
+.home-vista__dot:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+.home-vista__nav:active,
+.home-vista__playpause:active {
+  transform: scale(0.93);
+}
+
+/* Pause/Play Icon-Swap via aria-pressed */
+.home-vista__playpause .home-vista__icon-play {
+  display: none;
+}
+.home-vista__playpause[aria-pressed="true"] .home-vista__icon-pause {
+  display: none;
+}
+.home-vista__playpause[aria-pressed="true"] .home-vista__icon-play {
+  display: inline-block;
+}
+
+/* Dots */
+.home-vista__dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-inline: 0.4rem;
+}
+
+.home-vista__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.45);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.25s ease;
+  will-change: width, background;
+}
+
+.home-vista__dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.home-vista__dot.is-active {
+  width: 1.4rem;
+  background: var(--white, #fff);
+}
+
+/* Progress-Bar — dünner Strich unten am unteren Bildrand */
+.home-vista__progress {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  z-index: 7;
+  overflow: hidden;
+}
+
+.home-vista__progress-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--white, #fff);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* Reduzierte Bewegung: kein Parallax-Crop, instant Slides, kein Progress */
+@media (prefers-reduced-motion: reduce) {
+  .home-vista__media-inner {
+    top: 0;
+    height: 100%;
+  }
+  .home-vista__slide {
+    transition: none;
+  }
+  .home-vista__progress {
+    display: none;
+  }
+}
+
+/* Mobile: kompaktere Caption-Position */
+@media (max-width: 36rem) {
+  .home-vista__controls {
+    right: 50%;
+    transform: translateX(50%);
+  }
+  .home-vista__caption {
+    bottom: clamp(4.5rem, 12vw, 6rem);
+  }
+}
+
 /* Sektionen */
 .home-block {
   padding-block: clamp(4rem, 10vw, 7rem);

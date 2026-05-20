@@ -8,6 +8,7 @@ import { renderHome } from "./pages/home.js";
 import { initPageAnimations } from "./motion/init.js";
 import { initPageA11y } from "./a11y/page.js";
 import { initVideoPlayers } from "./media/video.js";
+import { initVistaSliders } from "./components/vista-slider.js";
 
 if (import.meta.env.DEV && import.meta.env.VITE_CSS_STUDIO === "true") {
   const { startStudio } = await import("cssstudio");
@@ -18,4 +19,5 @@ const app = document.querySelector("#app");
 renderHome(app);
 initPageA11y(app);
 initVideoPlayers(app);
+initVistaSliders(app);
 initPageAnimations(app);

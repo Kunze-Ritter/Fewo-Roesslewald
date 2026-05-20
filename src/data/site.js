@@ -25,6 +25,52 @@ export const SITE = {
     heading: "Schon mal",
     headingEm: "hineinschauen.",
   },
+  vista: {
+    autoplayMs: 5000,
+    label: "Mitten im Hochschwarzwald",
+    slides: [
+      {
+        slug: "hoellentalbahn-ravenna",
+        season: "Sommer",
+        caption: "Höllentalbahn",
+        location: "Ravenna-Viadukt · 5 Min. von Rösslewald",
+        alt:
+          "Höllentalbahn auf dem Ravenna-Viadukt im Sommer — nahe Hinterzarten",
+        width: 1920,
+        height: 1263,
+      },
+      {
+        slug: "hoellentalbahn-herbst",
+        season: "Herbst",
+        caption: "Goldener Hochschwarzwald",
+        location: "Höllentalbahn im Nebel · 5 Min. von Rösslewald",
+        alt:
+          "Höllentalbahn auf der Steinbrücke im Herbstnebel mit goldenem Laub",
+        width: 1920,
+        height: 1280,
+      },
+      {
+        slug: "hoellentalbahn-winter",
+        season: "Winter",
+        caption: "Ravennaschlucht-Weihnachtsmarkt",
+        location: "Im Advent · 10 Min. von Rösslewald",
+        alt:
+          "Ravennaschlucht-Weihnachtsmarkt im Schnee unter dem Viadukt der Höllentalbahn",
+        width: 1920,
+        height: 1282,
+      },
+      {
+        slug: "schwarzwald-nebel",
+        season: "Stille",
+        caption: "Mystisches Tannenmeer",
+        location: "Hochschwarzwald · vor der Haustür",
+        alt:
+          "Morgennebel zieht durch tiefe Schwarzwald-Tannenwälder",
+        width: 1920,
+        height: 1277,
+      },
+    ],
+  },
   img: {
     hero: "https://fewo-roesslewald.de/wp-content/uploads/2022/09/1.jpg",
     sonnentau: "https://fewo-roesslewald.de/wp-content/uploads/2022/09/Fewo-Sonnentau.jpg",

@@ -2,3 +2,8 @@ node_modules/
 dist/
 .firecrawl/
 public/media/*.mp4
+
+# Source-XL-Bilder (Originale aus Depositphotos) — werden lokal zu
+# public/img/*-{1280,1920,2560}.jpg resized und sollen nicht ins Repo.
+Depositphotos_*.jpg
+Depositphotos_*.png

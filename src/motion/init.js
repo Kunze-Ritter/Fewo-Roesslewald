@@ -85,9 +85,19 @@ function initZoomScroll(root) {
     const target = el.closest("section") || el;
     /* will-change steht im CSS (siehe motion.css) — kein JS-Style-Write
      * im Init-Path, sonst forced reflow durch direkt folgende Lese-Calls
-     * im <video-player> Custom-Element. */
+     * im <video-player> Custom-Element.
+     *
+     * Best-Practice (Motion-Doku): `transform` als Compound-String statt
+     * individuelle `scale`-Property — sonst animiert Motion über
+     * CSS-Variable (--motion-scale), was nicht GPU-accelerated ist.
+     * Mit `transform` läuft die Animation via ScrollTimeline-API direkt
+     * auf dem Compositor. */
     scroll(
-      animate(el, { scale: [0.88, 1] }, { ease: "linear" }),
+      animate(
+        el,
+        { transform: ["scale(0.88)", "scale(1)"] },
+        { ease: "linear" },
+      ),
       {
         target,
         offset: ["start end", "center center"],
@@ -269,11 +279,45 @@ function initHeader(root) {
   );
 }
 
+/**
+ * Echter Scroll-Parallax: Inner-Wrapper bewegt sich entgegen der
+ * Scroll-Richtung (–15%..+15% seiner Höhe). Der äußere Container hat
+ * overflow: hidden, der Inner-Wrapper ist überdimensioniert (130% Höhe),
+ * sodass keine Lücken entstehen. Curtain & Caption sind Geschwister
+ * außerhalb des Wrappers und bleiben unbewegt.
+ *
+ * Best-Practice (Motion-Doku): `transform` als Compound-String — sonst
+ * würde Motion `y` als individuelle CSS-Variable animieren, was nicht
+ * GPU-accelerated wäre. Compound-Transform läuft via ScrollTimeline
+ * direkt auf dem Compositor.
+ */
+function initParallax(root) {
+  root.querySelectorAll("[data-motion-parallax]").forEach((el) => {
+    /* Parallax in Slidern (z.B. Vista-Slider) wird von der Slider-Komponente
+     * selbst gemanagt — nur das aktive Slide bekommt scroll(), inaktive
+     * sind hidden und brauchen keine kontinuierliche Animation laufen
+     * zu lassen (Off-Screen-Optimization, MotionScore-Empfehlung). */
+    if (el.closest("[data-vista-slider]")) return;
+
+    const target = el.parentElement;
+    if (!target) return;
+    el.style.willChange = "transform";
+    scroll(
+      animate(
+        el,
+        { transform: ["translateY(-15%)", "translateY(15%)"] },
+        { ease: "linear" },
+      ),
+      { target, offset: ["start end", "end start"] },
+    );
+  });
+}
+
 export function initPageAnimations(root = document) {
   if (prefersReducedMotion()) {
     root
       .querySelectorAll(
-        "[data-motion-hero], [data-motion-hero] > *, [data-motion-reveal], [data-motion-reveal] > *, [data-motion-stagger] > *, [data-motion-reveal-scale], [data-motion-hero-media], [data-motion-header], [data-motion-zoom-scroll]",
+        "[data-motion-hero], [data-motion-hero] > *, [data-motion-reveal], [data-motion-reveal] > *, [data-motion-stagger] > *, [data-motion-reveal-scale], [data-motion-hero-media], [data-motion-header], [data-motion-zoom-scroll], [data-motion-parallax]",
       )
       .forEach((el) => {
         el.style.opacity = "1";
@@ -300,5 +344,6 @@ export function initPageAnimations(root = document) {
   initRevealScale(root);
   initCurtain(root);
   initZoomScroll(root);
+  initParallax(root);
   initScrollTint();
 }
