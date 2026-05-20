@@ -35,17 +35,44 @@ export function renderHome(root) {
     .join("");
 
   const gallery = SITE.img.gallery
-    .map(
-      (item, i) =>
-        `<img src="${esc(item.src)}" alt="${esc(item.alt)}" width="640" height="480" loading="${i === 0 ? "eager" : "lazy"}" decoding="async" />`,
-    )
+    .map((item, i, arr) => {
+      const isLast = i === arr.length - 1;
+      const loading = i === 0 ? "eager" : "lazy";
+      if (isLast) {
+        return `
+          <li class="home-gallery__item home-gallery__item--cta" data-motion-curtain>
+            <figure class="home-gallery__media">
+              <img src="${esc(item.src)}" alt="" width="640" height="640" loading="${loading}" decoding="async" />
+              <button type="button" class="home-gallery__more" aria-label="Alle Fotos ansehen">
+                <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 16L7.47 11.53A1.77 1.77 0 0 1 10.03 11.53L14 15.5M15.5 17 14 15.5M21 16l-2.47-2.47A1.77 1.77 0 0 0 15.97 13.53L14 15.5" />
+                  <path d="M15.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1Z" />
+                  <path d="M3.7 19.75C2.5 18.34 2.5 16.23 2.5 12s0-6.34 1.2-7.75A2.85 2.85 0 0 1 4.25 3.7C5.66 2.5 7.77 2.5 12 2.5s6.34 0 7.75 1.2c.2.17.38.36.55.55C21.5 5.66 21.5 7.77 21.5 12s0 6.34-1.2 7.75a2.85 2.85 0 0 1-.55.55C18.34 21.5 16.23 21.5 12 21.5s-6.34 0-7.75-1.2a2.85 2.85 0 0 1-.55-.55Z" />
+                </svg>
+                <span>Alle Fotos</span>
+              </button>
+              <span class="motion-curtain" aria-hidden="true"></span>
+            </figure>
+          </li>
+        `;
+      }
+      return `
+        <li class="home-gallery__item" data-motion-curtain>
+          <figure class="home-gallery__media">
+            <img src="${esc(item.src)}" alt="${esc(item.alt)}" width="640" height="640" loading="${loading}" decoding="async" />
+            <span class="motion-curtain" aria-hidden="true"></span>
+          </figure>
+        </li>
+      `;
+    })
     .join("");
 
   const apartments = APARTMENTS.map(
     (apt) => `
       <article class="home-room" id="wohnung-${esc(apt.slug)}">
-        <a class="home-room__media" href="#wohnung-${esc(apt.slug)}">
+        <a class="home-room__media" href="#wohnung-${esc(apt.slug)}" data-motion-curtain>
           <img src="${esc(apt.image)}" alt="Ferienwohnung ${esc(apt.name)}" width="900" height="1100" loading="lazy" />
+          <span class="motion-curtain" aria-hidden="true"></span>
         </a>
         <div class="home-room__body">
           <h3 class="home-room__title">${esc(apt.name)}</h3>
@@ -73,8 +100,9 @@ export function renderHome(root) {
 
   const region = REGION.map(
     (r) => `
-      <a class="home-place" href="#umgebung">
+      <a class="home-place" href="#umgebung" data-motion-curtain>
         <img src="${esc(r.image)}" alt="${esc(r.alt)}" width="600" height="750" loading="lazy" decoding="async" />
+        <span class="motion-curtain" aria-hidden="true"></span>
         <span class="home-place__label">
           <strong>${esc(r.title)}</strong>
           <span>${esc(r.desc)}</span>
@@ -87,8 +115,9 @@ export function renderHome(root) {
     .map(
       (p) => `
       <article class="home-journal__post">
-        <a class="home-journal__media" href="${esc(BLOG.ctaHref)}${esc(p.slug)}/" aria-labelledby="post-${esc(p.slug)}">
+        <a class="home-journal__media" href="${esc(BLOG.ctaHref)}${esc(p.slug)}/" aria-labelledby="post-${esc(p.slug)}" data-motion-curtain>
           <img src="${esc(p.image)}" alt="${esc(p.imageAlt)}" width="800" height="600" loading="lazy" decoding="async" />
+          <span class="motion-curtain" aria-hidden="true"></span>
         </a>
         <div class="home-journal__body">
           <p class="home-journal__meta">
@@ -128,7 +157,7 @@ export function renderHome(root) {
 
       <main id="main">
         <section class="home-hero">
-          <div class="home-shell home-hero__intro">
+          <div class="home-shell home-hero__intro" data-motion-hero>
             <p class="home-kicker">${esc(SITE.hero.rating)}</p>
             <h1 class="home-hero__title">
               ${esc(SITE.hero.title)}<br /><em>${esc(SITE.hero.titleEm)}</em>
@@ -138,8 +167,9 @@ export function renderHome(root) {
               ${bookLink("Verfügbarkeit prüfen", "btn--primary")}
             </p>
           </div>
-          <figure class="home-hero__visual" data-motion-hero-media>
+          <figure class="home-hero__visual" data-motion-hero-media data-motion-curtain>
             <img src="${esc(SITE.img.hero)}" alt="Ferienhaus am Rösslewald" width="1600" height="1000" fetchpriority="high" />
+            <span class="motion-curtain" aria-hidden="true"></span>
           </figure>
         </section>
 
@@ -151,7 +181,7 @@ export function renderHome(root) {
               <p class="home-lead">${esc(SITE.story.body)}</p>
               <a class="btn--secondary btn--outline" href="#video">Rundgang ansehen</a>
             </div>
-            <div class="home-about__gallery" data-motion-reveal-scale role="group" aria-label="Impressionen vom Ferienhaus">${gallery}</div>
+            <ul class="home-gallery" aria-label="Impressionen vom Ferienhaus">${gallery}</ul>
           </div>
         </section>
 
@@ -163,13 +193,25 @@ export function renderHome(root) {
                 ${esc(SITE.video.heading)} <em>${esc(SITE.video.headingEm)}</em>
               </h2>
             </header>
-            <div class="video-player-wrap" data-motion-zoom-scroll>
-              <video-player class="fewo-video-player">
-                <video-skin>
-                  <img slot="poster" src="${esc(SITE.video.poster)}" alt="Vorschaubild: ${esc(SITE.video.title)}" width="1200" height="675" />
-                  <video src="${esc(SITE.video.src)}" title="${esc(SITE.video.title)}"></video>
-                </video-skin>
-              </video-player>
+            <div
+              class="video-player-wrap"
+              data-motion-zoom-scroll
+              data-motion-curtain
+              data-video-lazy
+              data-video-src="${esc(SITE.video.src)}"
+              data-video-poster="${esc(SITE.video.poster)}"
+              data-video-title="${esc(SITE.video.title)}"
+            >
+              <img
+                class="video-player-wrap__placeholder"
+                src="${esc(SITE.video.poster)}"
+                alt="Vorschaubild: ${esc(SITE.video.title)}"
+                width="1200"
+                height="675"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="motion-curtain" aria-hidden="true"></span>
             </div>
           </div>
         </section>
@@ -190,7 +232,7 @@ export function renderHome(root) {
               <p class="home-kicker">Wohnungen</p>
               <h2 id="wohnungen-heading" class="home-h2 home-h2--center">Zwei Wohnungen, ein Anspruch</h2>
             </header>
-            <div class="home-rooms" data-motion-stagger>${apartments}</div>
+            <div class="home-rooms" data-motion-curtain-group>${apartments}</div>
           </div>
         </section>
 
@@ -201,7 +243,7 @@ export function renderHome(root) {
               <h2 id="umgebung-heading" class="home-h2">Titisee, Feldberg, Wandern</h2>
               <p class="home-lead home-lead--narrow">Morgens in die Natur — abends Ruhe am Rösslewald. Konus-Karte für ÖPNV inklusive.</p>
             </div>
-            <div class="home-places" data-motion-stagger>${region}</div>
+            <div class="home-places">${region}</div>
           </div>
         </section>
 
@@ -214,7 +256,7 @@ export function renderHome(root) {
               </h2>
               <p class="home-lead home-lead--narrow">${esc(BLOG.lead)}</p>
             </header>
-            <div class="home-journal" data-motion-stagger>${posts}</div>
+            <div class="home-journal" data-motion-curtain-group>${posts}</div>
             <p class="home-journal__cta" data-motion-reveal>
               <a class="btn btn--outline" href="${esc(BLOG.ctaHref)}">${esc(BLOG.ctaLabel)} →</a>
             </p>

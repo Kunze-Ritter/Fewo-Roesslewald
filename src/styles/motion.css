@@ -1,35 +1,33 @@
 /* Motion — Initialzustände
- * Reine Compositor-Properties (transform, opacity, filter) für 60fps+.
+ * Nur Compositor-Properties (transform, opacity, filter) — 60fps+.
  * Headline-Kinder: zusätzlicher blur(10px) für "Editorial"-Fade-In.
+ *
+ * Wichtig: kein permanentes `will-change` mehr — wird JIT in motion/init.js
+ * via promote() für die Animationsdauer gesetzt und danach entfernt
+ * (vermeidet "stale will-change" und Overlap-promoted layers).
  */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Section-Block reveals (volle Container) */
+  /* Block-Reveal: volles Element fadet ein
+   * (single-block branch in motion/init.js — kommt nur zum Tragen,
+   * wenn das Element keine direkten Kind-Elemente hat). */
   [data-motion-reveal],
   [data-motion-stagger] > *,
-  [data-motion-reveal-scale],
-  [data-motion-hero-media] {
+  [data-motion-reveal-scale] {
     opacity: 0;
     transform: translateY(1rem);
   }
 
-  /* Headline-Stack-Kinder — gestaffelter Blur-Reveal */
-  .home-hero__intro > .home-kicker,
-  .home-hero__intro > .home-hero__title,
-  .home-hero__intro > .home-hero__lead,
-  .home-hero__intro > .home-hero__cta,
-  [data-motion-reveal] > .home-kicker,
-  [data-motion-reveal] > .home-h1,
-  [data-motion-reveal] > .home-h2,
-  [data-motion-reveal] > .home-lead,
-  [data-motion-reveal] > .home-closing__title,
-  [data-motion-reveal] > .home-hero__lead,
-  [data-motion-reveal] > .home-hero__cta,
-  [data-motion-reveal] > .btn--outline {
+  /* Heading-Stack: alle direkten Kinder eines Reveal-/Hero-Containers
+   * werden gestaffelt mit Blur-Fade animiert. Keine Klassen-Liste —
+   * neue Headings, Leads, Buttons funktionieren automatisch.
+   *   data-motion-hero    → Page-Load (sofort, ohne inView)
+   *   data-motion-reveal  → Scroll-triggered (inView) */
+  [data-motion-hero] > *,
+  [data-motion-reveal] > * {
     opacity: 0;
     transform: translateY(1.125rem);
     filter: blur(10px);
-    will-change: transform, opacity, filter;
   }
 
   [data-motion-header] {
@@ -37,11 +35,47 @@
     transform: translateY(-0.35rem);
   }
 
-  /* Scroll-gebundener Zoom (z. B. Video-Frame) */
+  /* Scroll-gebundener Zoom (z. B. Video-Frame) — Initialzustand
+   * will-change steht hier permanent: 1 Element, kontinuierliche
+   * Scroll-Bindung, keine Style-Writes im Mount-Path nötig. */
   [data-motion-zoom-scroll] {
     transform: scale(0.88);
     transform-origin: center center;
     will-change: transform;
+  }
+
+  /* Curtain-Reveal — globaler Default für alle Bild-/Video-Wrapper.
+   * - Wrapper braucht position: relative + overflow: hidden.
+   * - Curtain-Span deckt den Wrapper, wird per JS scaleY(0) wegrollt.
+   * - Bild/Video startet mit Ken-Burns scale(1.12) → scale(1). */
+  [data-motion-curtain] {
+    position: relative;
+    overflow: hidden;
+  }
+
+  [data-motion-curtain] > img,
+  [data-motion-curtain] > video,
+  [data-motion-curtain] > .motion-curtain-target,
+  [data-motion-curtain] > figure > img,
+  [data-motion-curtain] > a > img {
+    transform: scale(1.12);
+  }
+
+  .motion-curtain {
+    position: absolute;
+    inset: 0;
+    background: var(--primary);
+    transform-origin: bottom;
+    /* Hoch genug, um auch über CTA-Buttons (z 2) und Hover-Labels
+     * zu liegen — alles wird gleichzeitig vom Vorhang aufgedeckt. */
+    z-index: 5;
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-curtain {
+    display: none;
   }
 }
 
@@ -53,7 +87,9 @@
   [data-motion-reveal-scale],
   [data-motion-hero-media],
   [data-motion-header],
-  [data-motion-zoom-scroll] {
+  [data-motion-zoom-scroll],
+  [data-motion-curtain] img,
+  [data-motion-curtain] video {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
