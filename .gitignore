@@ -1,7 +1,12 @@
 node_modules/
 dist/
 .firecrawl/
-public/media/*.mp4
+
+# Große, nicht-web-optimierte Quell-Videos bleiben außen vor; nur
+# web-optimierte (<25 MB, H.264 CRF≈24) checken wir ein, damit der
+# Cloudflare-Build sie hat. Aktuell: Sequenz-02_3.mp4 (~5 MB).
+public/media/*-source.mp4
+public/media/*-original.mp4
 
 # Source-XL-Bilder (Originale aus Depositphotos) — werden lokal zu
 # public/img/*-{1280,1920,2560}.jpg resized und sollen nicht ins Repo.

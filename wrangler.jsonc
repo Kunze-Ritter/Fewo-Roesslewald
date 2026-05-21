@@ -1,0 +1,27 @@
+/**
+ * Cloudflare Workers — Static Assets (SPA-Modus)
+ *
+ * Dieses Projekt deployed *kein* Worker-Script, nur die gebauten Vite-
+ * Assets aus ./dist. Cloudflare liefert sie über das integrierte
+ * Static-Assets-CDN aus und kümmert sich um SSL, Caching und Routing.
+ *
+ * `assets.not_found_handling: "single-page-application"` liefert bei
+ * jedem Pfad, für den keine statische Datei existiert, die index.html
+ * mit HTTP 200 aus — der clientseitige Router (src/router.js) übernimmt
+ * dann die Route. Das ersetzt funktional die `_redirects`-Datei.
+ *
+ * `run_worker_first: false` ist Default und bedeutet: Statische Dateien
+ * werden direkt vom Edge serviert, ohne einen Worker zu durchlaufen —
+ * maximale Performance, da wir keine dynamische Logik brauchen.
+ *
+ * Doku: https://developers.cloudflare.com/workers/static-assets/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fewo-roesslewald",
+  "compatibility_date": "2026-05-21",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
