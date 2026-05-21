@@ -739,17 +739,30 @@ body {
   inline-size: 100%;
 }
 
-.home-amenities li {
-  font-size: var(--text-m);
-  font-weight: 500;
-  color: var(--text-dark);
+.home-amenity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
   padding-block: var(--space-xs);
   border-block-end: 1px solid rgb(26 35 32 / 0.08);
 }
 
+.home-amenity__title {
+  font-size: var(--text-m);
+  font-weight: 500;
+  color: var(--text-dark);
+  line-height: 1.3;
+}
+
+.home-amenity__desc {
+  font-size: var(--text-s);
+  color: var(--text-dark-muted);
+  line-height: 1.4;
+}
+
 @media (width >= 64rem) {
   .home-amenities {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -772,6 +785,7 @@ body {
 }
 
 .home-room__media {
+  position: relative;
   display: block;
   border-radius: 1rem;
   overflow: hidden;
@@ -789,6 +803,26 @@ body {
   transform: scale(1.03);
 }
 
+/* Preis-Badge — visuell oben rechts, hierarchisch oberhalb der
+ * Curtain-Overlay (z-index 3), damit es nicht beim Hover „verschluckt"
+ * wird. `pointer-events: none`, damit der Klick aufs Bild durchgeht. */
+.home-room__price {
+  position: absolute;
+  inset-block-start: var(--space-m);
+  inset-inline-end: var(--space-m);
+  z-index: 3;
+  padding-inline: var(--space-s);
+  padding-block: 0.375rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.96);
+  color: var(--text-dark);
+  font-size: var(--text-s);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgb(26 35 32 / 0.12);
+}
+
 .home-room__title {
   margin: 0;
   font-family: var(--heading-font-family);
@@ -803,57 +837,323 @@ body {
   color: var(--text-dark-muted);
 }
 
-/* ─── Umgebung ──────────────────────────────────────────────────────── */
-.home-places {
-  display: grid;
-  gap: var(--space-m);
-}
-
-@media (width >= 40rem) {
-  .home-places {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.home-place {
-  position: relative;
-  display: block;
-  border-radius: 1rem;
-  overflow: hidden;
-  text-decoration: none;
-  color: var(--white);
-}
-
-.home-place img {
-  inline-size: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.home-place:hover img {
-  transform: scale(1.04);
-}
-
-.home-place__label {
-  position: absolute;
-  inset: auto 0 0 0;
-  padding: var(--space-l);
-  background: linear-gradient(transparent, rgb(0 0 0 / 0.65));
+.home-room__usps {
+  list-style: none;
+  margin: var(--space-xs) 0 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.home-place__label strong {
+.home-room__usps li {
+  position: relative;
+  padding-inline-start: 1.25rem;
+  font-size: var(--text-s);
+  color: var(--text-dark);
+}
+
+.home-room__usps li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.55em;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.home-room__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s) var(--space-m);
+  align-items: center;
+  margin: var(--space-m) 0 0;
+}
+
+.home-room__details {
+  /* gleicht den vertikalen Visual-Bias des Outline-Buttons mit dem
+   * Link-Pendant aus, damit `.home-room__actions` einen sauberen
+   * Baseline-Anker bekommt */
+  align-self: center;
+}
+
+/* ─── Trust-Strip ───────────────────────────────────────────────────────
+ * Direkt unter dem Hero. Reduziertes Padding (block) — ein schlanker
+ * Streifen ohne große Section-Geste. Mobil als Liste untereinander,
+ * ab `64rem` als 3-Spalten-Layout. */
+.home-trust {
+  padding-block: var(--space-l);
+  background: rgb(26 35 32 / 0.03);
+}
+
+.home-trust__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-m);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home-trust__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  text-align: center;
+}
+
+.home-trust__label {
+  font-family: var(--heading-font-family);
+  font-size: var(--text-m);
+  font-weight: 500;
+  color: var(--text-dark);
+  line-height: 1.3;
+}
+
+.home-trust__desc {
+  font-size: var(--text-s);
+  color: var(--text-dark-muted);
+  line-height: 1.4;
+}
+
+@media (width >= 48rem) {
+  .home-trust__list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-l);
+  }
+}
+
+/* ─── Gastgeber-Block in der Ferienhaus-Sektion ─────────────────────────
+ * Persönliche Note unterhalb der Story. Avatar (rund) + Copy nebeneinander
+ * — Foto kann ggf. fehlen, dann fällt der Block einfach auf eine
+ * Single-Column-Variante zurück. */
+.home-hosts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-m);
+  align-items: start;
+  margin-block: var(--space-l) var(--space-m);
+  padding: var(--space-m);
+  border-radius: 1rem;
+  background: rgb(26 35 32 / 0.04);
+}
+
+.home-hosts__media {
+  margin: 0;
+  inline-size: 5rem;
+  block-size: 5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgb(26 35 32 / 0.08);
+}
+
+.home-hosts__media img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Leerer Foto-Slot: Avatar-SVG zentriert, dezent gefärbt. So lange
+ * keine echte Aufnahme da ist, signalisiert das „Foto folgt" ohne
+ * broken-image-Optik. */
+.home-hosts__media[data-empty="true"] {
+  display: grid;
+  place-items: center;
+  color: var(--text-dark-muted);
+  border: 1px dashed rgb(26 35 32 / 0.18);
+  background: rgb(26 35 32 / 0.04);
+}
+
+.home-hosts__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.home-hosts__kicker {
+  margin: 0;
+}
+
+.home-hosts__name {
+  margin: 0;
   font-family: var(--heading-font-family);
   font-size: var(--text-l);
   font-weight: 500;
+  color: var(--text-dark);
 }
 
-.home-place__label span {
+.home-hosts__intro {
+  margin: 0;
+  font-size: var(--text-m);
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+.home-hosts__signature {
+  margin: 0;
   font-size: var(--text-s);
-  opacity: 0.9;
+  color: var(--text-dark-muted);
+  font-style: italic;
+}
+
+@media (width >= 48rem) {
+  .home-hosts__media {
+    inline-size: 6rem;
+    block-size: 6rem;
+  }
+}
+
+/* ─── Region-Kicker über dem Reiseführer ───────────────────────────────
+ * Schlanker Inline-Streifen mit den drei wichtigsten Ausflugszielen.
+ * Ersatz für die alte „Umgebung"-Sektion — semantisch ein Lead-In, der
+ * den Reiseführer thematisch ankert, ohne nochmal volle Karten zu zeigen. */
+.home-region-kicker {
+  margin: var(--space-s) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: var(--space-s);
+  font-size: var(--text-m);
+  color: var(--text-dark-muted);
+}
+
+.home-region-kicker__item {
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.home-region-kicker__sep {
+  color: var(--primary);
+  opacity: 0.6;
+}
+
+/* ─── Premium-Partner — Editorial Centered ──────────────────────────────
+ * Steht direkt vor der Closing-CTA und übernimmt deren Rhythmus: Kicker,
+ * Heading, Lead, eine knappe Notes-Zeile mit „·"-Separatoren, ein
+ * Buchungs-Hinweis und der Kontakt-Block als feiner Inline-Footer.
+ *
+ * Bewusst keine Card- oder Hintergrund-Tönung — der Block fügt sich
+ * ruhig in den Seitenrhythmus ein. Die Hierarchie kommt allein aus
+ * Typografie und vertikalen Abständen.
+ */
+.home-partner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-s);
+  max-inline-size: 50rem;
+  margin-inline: auto;
+}
+
+/* Vereins-Logo als optischer Anker. Es ist farbig (Brand-Grün +
+ * blaue Titisee-Wellen) und schon "vereinstreu" — kein Tint nötig.
+ * Klickbar verlinkt auf die Vereins-Website. */
+.home-partner__logo-link {
+  display: inline-block;
+  margin-block-end: var(--space-xs);
+  border-radius: 50%;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.home-partner__logo-link:hover,
+.home-partner__logo-link:focus-visible {
+  transform: scale(1.04);
+}
+
+.home-partner__logo {
+  display: block;
+  inline-size: 7rem;
+  block-size: auto;
+  aspect-ratio: 1 / 1;
+}
+
+@media (width >= 48rem) {
+  .home-partner__logo {
+    inline-size: 8rem;
+  }
+}
+
+/* Inline-Notes: drei Punkte als Lese-Block; auf engen Viewports
+ * fließen sie über mehrere Zeilen, ab Tablet horizontal mit
+ * Bullet-Separatoren wie der Region-Kicker. */
+.home-partner__notes {
+  list-style: none;
+  margin: var(--space-s) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-m);
+  color: var(--text-dark);
+  line-height: 1.45;
+}
+
+.home-partner__note {
+  position: relative;
+}
+
+@media (width >= 48rem) {
+  .home-partner__notes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 1.25rem;
+  }
+
+  .home-partner__note + .home-partner__note::before {
+    content: "·";
+    position: absolute;
+    inset-inline-start: calc(-0.625rem - 1px);
+    color: var(--primary);
+    opacity: 0.6;
+  }
+}
+
+.home-partner__hint {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--text-s);
+  color: var(--text-dark-muted);
+  font-style: italic;
+}
+
+.home-partner__contact {
+  margin: var(--space-m) 0 0;
+  padding-block-start: var(--space-s);
+  border-block-start: 1px solid rgb(26 35 32 / 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.4rem 0.6rem;
+  font-size: var(--text-s);
+  color: var(--text-dark-muted);
+  inline-size: 100%;
+  max-inline-size: 44rem;
+}
+
+.home-partner__contact strong {
+  font-family: var(--heading-font-family);
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.home-partner__contact a {
+  color: var(--text-dark);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.home-partner__contact a:hover,
+.home-partner__contact a:focus-visible {
+  color: var(--primary);
 }
 
 /* ─── Reiseführer / Journal — Magazin-Layout ────────────────────────── */

@@ -102,21 +102,52 @@ export const SITE = {
 
 export const NAV = [
   { label: "Ferienhaus", href: "#ferienhaus" },
-  { label: "Ausstattung", href: "#ausstattung" },
   { label: "Wohnungen", href: "#wohnungen" },
-  { label: "Umgebung", href: "#umgebung" },
+  { label: "Ausstattung", href: "#ausstattung" },
   { label: "Reiseführer", href: "#reisefuehrer" },
   { label: "Kontakt", href: "#kontakt" },
 ];
 
-export const USPS = [
-  { title: "Sauna", desc: "Termin · Gebühr in Gästemappe" },
-  { title: "Wallbox", desc: "E-Mobilität" },
-  { title: "Konus-Karte", desc: "ÖPNV inklusive" },
-  { title: "Bergblick", desc: "Schwarzwald-Feeling" },
-  { title: "Ausstattung", desc: "Hochwertig & durchdacht" },
-  { title: "Ruhige Lage", desc: "Hinterzarten & Breitnau" },
+/**
+ * Trust-Strip direkt unter dem Hero.
+ *
+ * Nur Aussagen, die wir verifizieren können — keine Bewertungs-Scores
+ * oder Gäste-Zahlen als Platzhalter, weil das beim ersten Live-Gang
+ * peinlich werden kann. Sobald wir reale Stats haben (Holidu-Score,
+ * Anzahl Bewertungen, Eröffnungsjahr), hier ergänzen.
+ */
+export const TRUST = [
+  {
+    label: "5★ DTV-klassifiziert",
+    desc: "Deutscher Tourismusverband",
+  },
+  {
+    label: "Konus-Karte inklusive",
+    desc: "Bus & Bahn im Hochschwarzwald kostenlos",
+  },
+  {
+    label: "Direktbuchung",
+    desc: "Ohne Vermittlungsgebühr",
+  },
 ];
+
+/**
+ * Gastgeber-Block in der Ferienhaus-Sektion.
+ *
+ * Persönlichkeit ist bei Direkt-Vermietung der wichtigste Unterschied
+ * zu Booking/Airbnb. Aktuell mit Platzhaltern — name/photo später
+ * ersetzen.
+ */
+export const HOSTS = {
+  kicker: "Ihre Gastgeber",
+  name: "Familie [Name]",
+  intro:
+    "Wir betreiben den Rösslewald selbst — kein Hausverwalter, keine Hotline. Wenn Sie hier sind, sind wir hier. Das ist uns wichtig.",
+  signature: "— Ihre Gastgeber am Rösslewald",
+  /** Foto-Pfad — leer lassen für Platzhalter-Slot, später ergänzen. */
+  photo: "",
+  photoAlt: "Ihre Gastgeber am Rösslewald",
+};
 
 export const APARTMENTS = [
   {
@@ -125,8 +156,12 @@ export const APARTMENTS = [
     slug: "sonnentau",
     area: "95 m²",
     guests: "2–6 Personen",
+    bedrooms: "2 Schlafzimmer · 1 Bad",
+    priceFrom: "ab € xxx / Nacht",
     ideal: "Familien & längere Aufenthalte",
+    usps: ["Eigener Balkon mit Bergblick", "Boxspring 180×200", "Voll ausgestattete Küche"],
     image: SITE.img.sonnentau,
+    detailHref: "/wohnungen/sonnentau/",
   },
   {
     id: "weisstanne",
@@ -134,19 +169,74 @@ export const APARTMENTS = [
     slug: "weisstanne",
     area: "68 m²",
     guests: "2–4 Personen",
+    bedrooms: "1 Schlafzimmer · 1 Bad",
+    priceFrom: "ab € xxx / Nacht",
     ideal: "Paare & kleine Familien",
+    usps: ["Ruhige Süd-Lage", "Boxspring 180×200", "Großzügiger Wohn-Essbereich"],
     image: SITE.img.weisstanne,
+    detailHref: "/wohnungen/weisstanne/",
   },
 ];
 
-export const FEATURES = [
+/**
+ * Konsolidierte Ausstattungs-Liste.
+ *
+ * Ersatz für die früheren USPS + FEATURES — die hatten Doppelungen
+ * (Sauna, Wallbox) und die nackten Titel ohne `desc` wirkten generisch.
+ * 8 prägnante Punkte, jedes mit klarer Sub-Aussage.
+ */
+export const AMENITIES = [
   { title: "Schlafkomfort", desc: "Boxspring 180×200" },
   { title: "Küche", desc: "Induktion, Ofen, Spülmaschine, Nespresso" },
-  { title: "Wellness", desc: "Private Sauna (Termin)" },
-  { title: "Komfort", desc: "WLAN, Waschmaschine/Trockner" },
-  { title: "Winter", desc: "Skischuhtrockner" },
-  { title: "E-Mobilität", desc: "Wallbox" },
+  { title: "Sauna", desc: "Im Haus · Termin nach Absprache" },
+  { title: "Bergblick", desc: "Balkon mit Schwarzwald-Panorama" },
+  { title: "Konus-Karte", desc: "ÖPNV im Hochschwarzwald inklusive" },
+  { title: "Wallbox", desc: "Eigene E-Ladestation am Haus" },
+  { title: "Komfort", desc: "WLAN, Waschmaschine, Trockner" },
+  { title: "Winter", desc: "Skischuhtrockner für nasse Tage" },
 ];
+
+/**
+ * Premium-Partner — Golfclub Hochschwarzwald e.V.
+ *
+ * Bewusst nicht als generische „Partner-Liste". Aktuell ein einziger
+ * Premium-Partner mit konkretem Gäste-Vorteil. Wenn später weitere
+ * Partner hinzukommen, sollten sie strukturell separat behandelt werden
+ * (z. B. ein Trust-Strip-ähnlicher „Weitere Vorteile"-Block).
+ *
+ * Inhaltliche Quellen: fewo-roesslewald.de (Original-Block) und
+ * gc-hsw.de (Lage, Golfschule, Gastronomie).
+ */
+export const PARTNER_GOLF = {
+  kicker: "Premium-Partner",
+  heading: "Golfen am Hochschwarzwald —",
+  headingEm: "ohne Greenfee.",
+  lead:
+    "Als Premium-Partner des Golfclub Hochschwarzwald e.V. spielen unsere Gäste greenfeefrei auf der 18-Loch-Anlage „Himmlische Hölle“ — 500 Meter vom Titisee, 30 Minuten von Freiburg.",
+  /** Inline-Notes: drei prägnante Punkte, durch „·“ getrennt gerendert. */
+  notes: [
+    "Greenfee-frei für unsere Gäste · Mo–So",
+    "10 % Rabatt für GC-HSW-Mitglieder bei Direktbuchung",
+    "Schnupperkurs, Platzreife und „Golfstüble“ — auch für Nichtgolfer",
+  ],
+  /** Hinweis-Zeile mit Buchungs-Code für GC-HSW-Mitglieder. */
+  bookingHint: "Mitglieder bitte bei der Buchung „Mitglied GC HSW“ angeben.",
+  /** Vereins-Logo (vom Original gc-hsw.de geladen, lokal abgelegt). */
+  logo: {
+    src: "/img/partner-gc-hsw.png",
+    alt: "Logo Golfclub Hochschwarzwald e.V.",
+    width: 96,
+    height: 96,
+  },
+  contact: {
+    name: "Golfclub Hochschwarzwald e.V.",
+    address: "Oberaltenweg 7, 79822 Titisee-Neustadt",
+    phone: "+49 7651 935777",
+    phoneDisplay: "07651 / 935777",
+    url: "https://www.gc-hsw.de/",
+    urlDisplay: "gc-hsw.de",
+  },
+};
 
 export const REVIEWS = [
   {
