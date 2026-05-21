@@ -175,6 +175,14 @@ body {
   padding-block-end: var(--space-l);
 }
 
+/* `display: flex` auf der Klasse hat höhere Spezifität als der UA-
+ * eingebaute `[hidden] { display: none }`. Ohne diese Regel würde das
+ * Mobile-Menü auch dann sichtbar bleiben, wenn das JS `nav.hidden = true`
+ * setzt — der Toggle-Button käme nie zur Wirkung. */
+.home-mobile-nav[hidden] {
+  display: none;
+}
+
 .home-mobile-nav a {
   text-decoration: none;
   color: var(--text-dark);
