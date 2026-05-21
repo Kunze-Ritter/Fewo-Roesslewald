@@ -1,9 +1,16 @@
-/* Barrierefreiheit — Fokus nur bei Tastatur, Hilfetexte */
+/* Barrierefreiheit — Fokus-Indikatoren, versteckte Hilfetexte
+ *
+ * Browser-Defaults von :focus-visible nutzen statt eigenes
+ * .user-is-tabbing-Detection-Script: ist heutzutage in allen Browsern
+ * implementiert und unterscheidet zuverlässig zwischen Maus- und
+ * Tastatur-Fokus. So gibt es immer einen sichtbaren Indikator,
+ * selbst wenn JS fehlschlägt (WCAG 2.4.7 Focus Visible — AAA: 2.4.13).
+ */
 
 .visually-hidden {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  inline-size: 1px;
+  block-size: 1px;
   padding: 0;
   margin: -1px;
   overflow: hidden;
@@ -12,22 +19,18 @@
   border: 0;
 }
 
-:focus {
-  outline: none;
-}
-
-.user-is-tabbing :focus-visible {
+:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 3px;
 }
 
-.user-is-tabbing .btn:focus-visible,
-.user-is-tabbing a:focus-visible {
+.btn:focus-visible,
+a:focus-visible {
   outline-offset: 4px;
 }
 
 @media (forced-colors: active) {
-  .user-is-tabbing :focus-visible {
+  :focus-visible {
     outline: 3px solid CanvasText;
   }
 }

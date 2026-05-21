@@ -1,4 +1,5 @@
 import "./styles/acss/automatic.css";
+import "./styles/etch-defaults.css";
 import "./styles/fonts.css";
 import "./styles/a11y.css";
 import "./styles/home.css";

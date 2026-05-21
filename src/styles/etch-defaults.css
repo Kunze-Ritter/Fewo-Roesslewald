@@ -1,0 +1,28 @@
+/* ───── Etch-Element-Defaults ────────────────────────────────────────
+ * In Etch+WP würden diese via Plugin gerendert. ACSS' WP-Export bringt
+ * nur die Tag-Selektor-Defaults für <section> (siehe acss/automatic.css),
+ * nicht die Container-/Section-Attribut-Defaults. Wir füllen das hier
+ * nach, damit
+ *   <section data-etch-element="section">
+ *     <div data-etch-element="container"> … </div>
+ *   </section>
+ * out-of-the-box korrekt rendert.
+ *
+ * `:where()` hält die Spezifität bei 0,0,0 — leicht durch
+ * Modifier-Klassen (`.home-vista`, `.home-about`, …) überschreibbar.
+ *
+ * Doku: https://docs.etchwp.com/elements/container
+ * ─────────────────────────────────────────────────────────────────── */
+
+:where([data-etch-element="section"]) {
+  align-items: center;
+}
+
+:where([data-etch-element="container"]) {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  max-inline-size: var(--content-width, 1366px);
+  align-self: center;
+  margin-inline: auto;
+}

@@ -51,24 +51,43 @@ function getHeadParts(el) {
   return [...el.children];
 }
 
-function initHero(root) {
-  const intro = root.querySelector("[data-motion-hero]");
-  if (intro) {
+/**
+ * "Intro"-Stack — Editorial-Reveal für Heading + Lead + CTA-Button.
+ * Wird sowohl im Hero-Intro als auch im Closing-CTA verwendet:
+ * gleiches Markup-Muster → gleiche Animation. inView mit niedrigem
+ * amount feuert für initial sichtbare Elemente (Hero) sofort und für
+ * scrolled-in Elemente (Closing-CTA) im richtigen Moment.
+ */
+function initIntro(root) {
+  root.querySelectorAll("[data-motion-intro]").forEach((intro) => {
     const parts = getHeadParts(intro);
-    if (parts.length >= 1) {
-      promote(
-        parts,
-        animate(parts, REVEAL_HEAD, {
-          duration: 0.95,
-          delay: stagger(0.1, { start: 0.05 }),
-          ease: EASE,
-        }),
-        "transform, opacity, filter",
+    if (!parts.length) {
+      inView(
+        intro,
+        () => {
+          promote(intro, animate(intro, REVEAL_Y, { duration: 0.7, ease: EASE }));
+        },
+        { amount: 0.1 },
       );
-    } else {
-      promote(intro, animate(intro, REVEAL_Y, { duration: 0.7, ease: EASE }));
+      return;
     }
-  }
+
+    inView(
+      intro,
+      () => {
+        promote(
+          parts,
+          animate(parts, REVEAL_HEAD, {
+            duration: 0.95,
+            delay: stagger(0.1, { start: 0.05 }),
+            ease: EASE,
+          }),
+          "transform, opacity, filter",
+        );
+      },
+      { amount: 0.1 },
+    );
+  });
 
   /* Hero-Bild: Reveal kommt komplett vom Curtain (data-motion-curtain).
    * Der frühere Scroll-Parallax wäre mit dem Curtain-Scale auf demselben
@@ -317,7 +336,7 @@ export function initPageAnimations(root = document) {
   if (prefersReducedMotion()) {
     root
       .querySelectorAll(
-        "[data-motion-hero], [data-motion-hero] > *, [data-motion-reveal], [data-motion-reveal] > *, [data-motion-stagger] > *, [data-motion-reveal-scale], [data-motion-hero-media], [data-motion-header], [data-motion-zoom-scroll], [data-motion-parallax]",
+        "[data-motion-intro], [data-motion-intro] > *, [data-motion-reveal], [data-motion-reveal] > *, [data-motion-stagger] > *, [data-motion-reveal-scale], [data-motion-hero-media], [data-motion-header], [data-motion-zoom-scroll], [data-motion-parallax]",
       )
       .forEach((el) => {
         el.style.opacity = "1";
@@ -338,7 +357,7 @@ export function initPageAnimations(root = document) {
   }
 
   initHeader(root);
-  initHero(root);
+  initIntro(root);
   initReveal(root);
   initStagger(root);
   initRevealScale(root);

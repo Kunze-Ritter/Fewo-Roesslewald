@@ -27,6 +27,18 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/* JIT will-change: vor Animation promoten, danach demoten.
+ * Vermeidet "stale will-change" und "overlap-promoted layers"
+ * (MotionScore HIGH findings). */
+function promote(el, props) {
+  if (!el) return;
+  el.style.willChange = props;
+}
+function demote(el) {
+  if (!el) return;
+  el.style.willChange = "";
+}
+
 export function createVistaSlider(root) {
   if (!root || root.dataset.vistaSliderReady === "true") return null;
 
@@ -92,6 +104,8 @@ export function createVistaSlider(root) {
       return;
     }
 
+    promote(el, "opacity");
+
     if (kind === "enter") {
       el.classList.add("is-active");
       el.style.visibility = "visible";
@@ -101,6 +115,7 @@ export function createVistaSlider(root) {
         { duration: fadeDur, ease: EASE_FADE },
       );
       slideAnims.set(el, a);
+      a.finished.catch(() => {}).finally(() => demote(el));
       animateCaption(el);
     } else {
       const a = animate(
@@ -114,6 +129,7 @@ export function createVistaSlider(root) {
         .finally(() => {
           el.classList.remove("is-active");
           el.style.visibility = "hidden";
+          demote(el);
         });
     }
   }
@@ -171,6 +187,7 @@ export function createVistaSlider(root) {
     if (progressAnim) progressAnim.stop();
     if (!progressEl || reduceMotion) return;
     progressEl.style.transform = "scaleX(0)";
+    promote(progressEl, "transform");
 
     progressAnim = animate(
       progressEl,
@@ -182,7 +199,8 @@ export function createVistaSlider(root) {
       .then(() => {
         if (!isPaused()) gotoPage(current + 1);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => demote(progressEl));
   }
 
   function pauseProgress() {
@@ -221,6 +239,11 @@ export function createVistaSlider(root) {
     animateSlide(nextSlide, "enter");
     prevSlide.setAttribute("aria-hidden", "true");
     nextSlide.setAttribute("aria-hidden", "false");
+    /* Nur aktiver Tabpanel im Tab-Cycle. Sonst würden Screen-Reader-
+     * Nutzer auch versteckte Slides per Tab erreichen, obwohl
+     * aria-hidden="true" sie semantisch entfernt. */
+    prevSlide.setAttribute("tabindex", "-1");
+    nextSlide.setAttribute("tabindex", "0");
 
     current = target;
     updateDots();
@@ -362,6 +385,9 @@ export function createVistaSlider(root) {
   });
 
   // Initial: erstes Slide ist aktiv, Caption animieren, Parallax + Autoplay starten
+  slides.forEach((s, i) => {
+    s.setAttribute("tabindex", i === 0 ? "0" : "-1");
+  });
   updateDots();
   animateCaption(slides[0]);
   initAllParallax();

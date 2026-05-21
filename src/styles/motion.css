@@ -18,12 +18,15 @@
     transform: translateY(1rem);
   }
 
-  /* Heading-Stack: alle direkten Kinder eines Reveal-/Hero-Containers
+  /* Heading-Stack: alle direkten Kinder eines Intro-/Reveal-Containers
    * werden gestaffelt mit Blur-Fade animiert. Keine Klassen-Liste —
    * neue Headings, Leads, Buttons funktionieren automatisch.
-   *   data-motion-hero    → Page-Load (sofort, ohne inView)
-   *   data-motion-reveal  → Scroll-triggered (inView) */
-  [data-motion-hero] > *,
+   *   data-motion-intro   → "Hero"-Editorial-Stack (Heading + Lead + CTA);
+   *                          inView mit niedrigem amount, feuert für
+   *                          initial sichtbare Hero-Intros sofort und
+   *                          für scrolled-in CTAs beim Reinscrollen.
+   *   data-motion-reveal  → kompakteres Stack-Reveal für Section-Heads. */
+  [data-motion-intro] > *,
   [data-motion-reveal] > * {
     opacity: 0;
     transform: translateY(1.125rem);

@@ -35,13 +35,19 @@ function vistaSlide(slide, index, total) {
     .join(", ");
   const src = `/img/${slide.slug}-1920.jpg`;
   const isFirst = index === 0;
+  // Tabpanel-Pattern (WAI-ARIA APG, "Carousel with Tabs"):
+  // Jeder Slide = tabpanel, kontrolliert vom passenden tab (Dot).
+  // aria-labelledby verknüpft Panel ↔ Tab → Screen-Reader liest beim
+  // Fokus auf den Tab den Slide-Inhalt sinnvoll vor.
   return `
     <li class="home-vista__slide${isFirst ? " is-active" : ""}"
         id="vista-slide-${index}"
-        role="group"
-        aria-roledescription="Slide"
+        role="tabpanel"
+        aria-roledescription="slide"
+        aria-labelledby="vista-tab-${index}"
         aria-label="Slide ${index + 1} von ${total}: ${esc(slide.season)}"
         aria-hidden="${isFirst ? "false" : "true"}"
+        tabindex="0"
         data-slide-index="${index}"
         data-season="${esc(slide.season)}"
         data-caption="${esc(slide.caption)}"
@@ -59,8 +65,13 @@ function vistaSlide(slide, index, total) {
 
 function vistaCaptionMarkup(slides) {
   const first = slides[0];
+  // Bewusst kein aria-live: Bei 5 s-Autoplay würde der Screen-Reader im
+  // Sekundentakt unterbrechen ("annoyance"). WAI-APG empfiehlt für
+  // auto-rotating Carousels stattdessen: Slide-Pause beim Fokus +
+  // Slides als <tabpanel> mit Label — das deckt SR-Bedürfnisse ab,
+  // ohne dauerhaft zu stören.
   return `
-    <figcaption class="home-vista__caption" aria-live="polite" aria-atomic="true">
+    <figcaption class="home-vista__caption">
       <span class="home-vista__season">${esc(first.season)}</span>
       <span class="home-vista__caption-label">${esc(first.caption)}</span>
       <span class="home-vista__caption-meta">${esc(first.location)}</span>
@@ -180,7 +191,7 @@ export function renderHome(root) {
       <a class="skip-link" href="#main">Zum Inhalt</a>
 
       <header class="home-header" data-motion-header>
-        <div class="home-shell home-header__row">
+        <div class="home-header__row">
           <a class="home-logo" href="/" aria-label="${esc(SITE.name)} — Startseite">${esc(SITE.name)}</a>
           <nav class="home-nav" aria-label="Hauptnavigation">${NAV.map(navLink).join("")}</nav>
           ${bookLink("Verfügbarkeit prüfen", "btn--primary home-header__cta")}
@@ -195,8 +206,8 @@ export function renderHome(root) {
       </header>
 
       <main id="main">
-        <section class="home-hero">
-          <div class="home-shell home-hero__intro" data-motion-hero>
+        <section class="home-hero" data-etch-element="section">
+          <div class="home-hero__intro" data-etch-element="container" data-motion-intro>
             <p class="home-kicker">${esc(SITE.hero.rating)}</p>
             <h1 class="home-hero__title">
               ${esc(SITE.hero.title)}<br /><em>${esc(SITE.hero.titleEm)}</em>
@@ -212,8 +223,8 @@ export function renderHome(root) {
           </figure>
         </section>
 
-        <section class="home-vista"
-                 aria-roledescription="Carousel"
+        <section class="home-vista" data-etch-element="section"
+                 aria-roledescription="carousel"
                  aria-label="${esc(SITE.vista.label)}"
                  data-vista-slider
                  data-autoplay-ms="${SITE.vista.autoplayMs}">
@@ -280,8 +291,8 @@ export function renderHome(root) {
           </figure>
         </section>
 
-        <section id="ferienhaus" class="home-block" aria-labelledby="ferienhaus-heading">
-          <div class="home-shell home-about">
+        <section id="ferienhaus" class="home-block" aria-labelledby="ferienhaus-heading" data-etch-element="section">
+          <div class="home-about" data-etch-element="container">
             <div class="home-about__copy" data-motion-reveal>
               <p class="home-kicker">${esc(SITE.story.label)}</p>
               <h2 id="ferienhaus-heading" class="home-h2">${esc(SITE.story.heading)}</h2>
@@ -292,8 +303,8 @@ export function renderHome(root) {
           </div>
         </section>
 
-        <section id="video" class="home-block home-block--dark" aria-labelledby="video-heading">
-          <div class="home-shell">
+        <section id="video" class="home-block home-block--dark" aria-labelledby="video-heading" data-etch-element="section">
+          <div data-etch-element="container">
             <header class="home-section-head home-section-head--center home-section-head--on-dark" data-motion-reveal>
               <p class="home-kicker">${esc(SITE.video.kicker)}</p>
               <h2 id="video-heading" class="home-h2 home-h2--center">
@@ -323,18 +334,19 @@ export function renderHome(root) {
           </div>
         </section>
 
-        <section id="ausstattung" class="home-block" aria-labelledby="ausstattung-heading">
-          <div class="home-shell">
-            <div class="home-section-head" data-motion-reveal>
+        <section id="ausstattung" class="home-block" aria-labelledby="ausstattung-heading" data-etch-element="section">
+          <div class="home-features" data-etch-element="container">
+            <div class="home-features__copy" data-motion-reveal>
               <p class="home-kicker">Ausstattung</p>
               <h2 id="ausstattung-heading" class="home-h2">Was dieses Haus bietet</h2>
+              <p class="home-lead">Hochwertige Betten, eine Küche zum Kochen, Sauna nach der Wanderung — und ein Balkon, auf dem der Schwarzwald einfach wirken darf.</p>
             </div>
             <ul class="home-amenities" data-motion-stagger>${amenities}</ul>
           </div>
         </section>
 
-        <section id="wohnungen" class="home-block" aria-labelledby="wohnungen-heading">
-          <div class="home-shell">
+        <section id="wohnungen" class="home-block" aria-labelledby="wohnungen-heading" data-etch-element="section">
+          <div data-etch-element="container">
             <header class="home-section-head home-section-head--center" data-motion-reveal>
               <p class="home-kicker">Wohnungen</p>
               <h2 id="wohnungen-heading" class="home-h2 home-h2--center">Zwei Wohnungen, ein Anspruch</h2>
@@ -343,8 +355,8 @@ export function renderHome(root) {
           </div>
         </section>
 
-        <section id="umgebung" class="home-block" aria-labelledby="umgebung-heading">
-          <div class="home-shell">
+        <section id="umgebung" class="home-block" aria-labelledby="umgebung-heading" data-etch-element="section">
+          <div data-etch-element="container">
             <div class="home-section-head" data-motion-reveal>
               <p class="home-kicker">Umgebung</p>
               <h2 id="umgebung-heading" class="home-h2">Titisee, Feldberg, Wandern</h2>
@@ -354,8 +366,8 @@ export function renderHome(root) {
           </div>
         </section>
 
-        <section id="reisefuehrer" class="home-block" aria-labelledby="reisefuehrer-heading">
-          <div class="home-shell">
+        <section id="reisefuehrer" class="home-block" aria-labelledby="reisefuehrer-heading" data-etch-element="section">
+          <div data-etch-element="container">
             <header class="home-section-head home-section-head--center" data-motion-reveal>
               <p class="home-kicker">${esc(BLOG.kicker)}</p>
               <h2 id="reisefuehrer-heading" class="home-h2 home-h2--center">
@@ -370,8 +382,8 @@ export function renderHome(root) {
           </div>
         </section>
 
-        <section id="bewertungen" class="home-block" aria-labelledby="bewertungen-heading">
-          <div class="home-shell">
+        <section id="bewertungen" class="home-block" aria-labelledby="bewertungen-heading" data-etch-element="section">
+          <div data-etch-element="container">
             <header class="home-section-head home-section-head--center" data-motion-reveal>
               <p class="home-kicker">Gästestimmen</p>
               <h2 id="bewertungen-heading" class="home-h2 home-h2--center">Was Gäste sagen</h2>
@@ -380,25 +392,26 @@ export function renderHome(root) {
           </div>
         </section>
 
-        <section class="home-block home-block--cta" aria-labelledby="cta-heading">
-          <div class="home-shell home-closing" data-motion-reveal>
+        <section class="home-block home-block--cta" aria-labelledby="cta-heading" data-etch-element="section">
+          <div class="home-closing" data-etch-element="container" data-motion-intro>
             <h2 id="cta-heading" class="home-closing__title">Bereit für <em>den Schwarzwald?</em></h2>
-            ${bookLink("Verfügbarkeit prüfen", "btn--primary")}
+            <p class="home-closing__lead">Schreiben Sie uns. Wir antworten persönlich.</p>
+            <p class="home-closing__cta">${bookLink("Verfügbarkeit prüfen", "btn--primary")}</p>
           </div>
         </section>
       </main>
 
       <footer id="kontakt" class="home-footer">
-        <div class="home-shell home-footer__grid">
+        <div class="home-footer__grid">
           <p class="home-footer__brand">${esc(SITE.name)} · ${esc(SITE.tagline)}</p>
           <nav class="home-footer__nav" aria-label="Footer">
-            <a href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener">Buchen</a>
+            <a href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">Buchen<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>
             <a href="#ferienhaus">Ferienhaus</a>
             <a href="#wohnungen">Wohnungen</a>
             <a href="#umgebung">Umgebung</a>
             <a href="#reisefuehrer">Reiseführer</a>
           </nav>
-          <p class="home-footer__legal">© ${new Date().getFullYear()} · <a href="#">Datenschutz</a> · <a href="#">Impressum</a></p>
+          <p class="home-footer__legal">© ${new Date().getFullYear()} · <a href="/datenschutz/">Datenschutz</a> · <a href="/impressum/">Impressum</a></p>
         </div>
       </footer>
     </div>

@@ -1,34 +1,12 @@
 /**
- * Barrierefreiheit — Fokus, Mobile-Menü, reduzierte Bewegung
+ * Barrierefreiheit — Mobile-Menü mit Focus-Trap + Escape
+ *
+ * Focus-Visible wird nicht mehr per JS gesteuert, da CSS-`:focus-visible`
+ * in allen modernen Browsern Maus-/Tastatur-Fokus korrekt unterscheidet
+ * und so robust ggü. JS-Fehlern bleibt.
  */
 export function initPageA11y(root = document) {
-  initFocusVisible();
   initMobileNav(root);
-}
-
-function initFocusVisible() {
-  let hadKeyboard = false;
-
-  window.addEventListener(
-    "keydown",
-    (e) => {
-      if (e.key === "Tab") {
-        hadKeyboard = true;
-        document.documentElement.classList.add("user-is-tabbing");
-      }
-    },
-    { passive: true },
-  );
-
-  window.addEventListener(
-    "mousedown",
-    () => {
-      if (!hadKeyboard) return;
-      hadKeyboard = false;
-      document.documentElement.classList.remove("user-is-tabbing");
-    },
-    { passive: true },
-  );
 }
 
 function initMobileNav(root) {

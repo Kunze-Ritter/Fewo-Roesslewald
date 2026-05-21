@@ -6,6 +6,14 @@
   box-sizing: border-box;
 }
 
+/* HTML5 `hidden`-Attribut hat nur Default-Display-Tag-Priority und wird
+ * sonst von jeder Klassen-Regel überschrieben. Damit z. B. <nav hidden>
+ * tatsächlich versteckt bleibt, bis JS es explizit anzeigt, setzen wir
+ * einen harten Reset. Modifier-Klassen können dann gezielt zeigen. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   font-size: var(--root-font-size);
   -webkit-font-smoothing: antialiased;
