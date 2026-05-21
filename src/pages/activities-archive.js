@@ -89,50 +89,36 @@ function metaLine(activity) {
 }
 
 /**
- * Vereinheitlichter Item-Renderer (Featured + kompakte Karte). Featured-
- * Item überspannt im Grid alle Spalten (`grid-column: 1 / -1`); die
- * 2-Spalten-Komposition des Featured liegt komplett innerhalb dieses
- * einen `<li>`. Spart einen Extra-Wrapper auf der Section-Ebene.
+ * Identischer Item-Renderer für jeden Listen-Eintrag. Das erste Item im
+ * Grid wird per CSS (`.blog-grid > :first-child`) zum Featured-Layout
+ * promoviert — keine Modifier-Klassen. So funktioniert es später in
+ * WordPress mit einem einzigen Query-Loop-Template.
  *
  * Begründung „kein `data-motion-reveal`" siehe Blog-Archive.
  */
-function renderItem(act, { isFeatured = false } = {}) {
-  const headingLevel = isFeatured ? 2 : 3;
-  const itemId = isFeatured ? `featured-${act.slug}` : `card-${act.slug}`;
-  const itemClass = isFeatured
-    ? "blog-grid__item blog-grid__item--featured"
-    : "blog-grid__item";
-  const articleClass = isFeatured ? "blog-featured" : "blog-card";
-  const mediaClass = isFeatured ? "blog-featured__media" : "blog-card__media";
-  const bodyClass = isFeatured ? "blog-featured__body" : "blog-card__body";
-  const titleClass = isFeatured ? "blog-featured__title" : "blog-card__title";
-  const excerptClass = isFeatured ? "blog-featured__excerpt" : "blog-card__excerpt";
-  const imgW = isFeatured ? 1600 : 800;
-  const imgH = isFeatured ? 900 : 600;
-  const loading = isFeatured ? "eager" : "lazy";
-  const fetchPriority = isFeatured ? ' fetchpriority="high"' : "";
-  const cta = isFeatured
-    ? `<a class="home-link" href="/aktivitaeten/${esc(act.slug)}/">Details ansehen →</a>`
-    : "";
+function renderItem(act, index = 0) {
+  const isFirst = index === 0;
+  const loading = isFirst ? "eager" : "lazy";
+  const fetchPriority = isFirst ? ' fetchpriority="high"' : "";
 
   return `
-    <li class="${itemClass}">
-      <article class="${articleClass}">
-        <a class="${mediaClass}" href="/aktivitaeten/${esc(act.slug)}/" aria-labelledby="${esc(itemId)}" data-motion-curtain>
-          <img src="${esc(act.hero.src)}" alt="${esc(act.hero.alt)}" width="${imgW}" height="${imgH}" loading="${loading}"${fetchPriority} decoding="async" />
+    <li class="blog-grid__item">
+      <article class="blog-card">
+        <a class="blog-card__media" href="/aktivitaeten/${esc(act.slug)}/" aria-labelledby="activity-${esc(act.slug)}" data-motion-curtain>
+          <img src="${esc(act.hero.src)}" alt="${esc(act.hero.alt)}" width="1600" height="1000" loading="${loading}"${fetchPriority} decoding="async" />
           <span class="motion-curtain" aria-hidden="true"></span>
         </a>
-        <div class="${bodyClass}">
+        <div class="blog-card__body">
           <p class="blog-meta">
             <span class="blog-meta__cat">${esc(getActivityCategoryLabel(act.category))}</span>
             <span aria-hidden="true">·</span>
             <span>${esc(metaLine(act))}</span>
           </p>
-          <h${headingLevel} id="${esc(itemId)}" class="${titleClass}">
+          <h2 id="activity-${esc(act.slug)}" class="blog-card__title">
             <a href="/aktivitaeten/${esc(act.slug)}/">${esc(act.title)}</a>
-          </h${headingLevel}>
-          <p class="${excerptClass}">${esc(act.excerpt)}</p>
-          ${cta}
+          </h2>
+          <p class="blog-card__excerpt">${esc(act.excerpt)}</p>
+          <a class="blog-card__cta home-link" href="/aktivitaeten/${esc(act.slug)}/">Details ansehen →</a>
         </div>
       </article>
     </li>
@@ -203,9 +189,12 @@ export function renderActivitiesArchive(root) {
 
   const empty = pageItems.length === 0 && !featured;
 
-  const items = [];
-  if (featured) items.push(renderItem(featured, { isFeatured: true }));
-  pageItems.forEach((a) => items.push(renderItem(a)));
+  /**
+   * Eine flache Liste. Das erste Item wird per CSS Featured —
+   * keine Modifier-Klasse, kein Verzweigungs-Markup.
+   */
+  const allActs = featured ? [featured, ...pageItems] : pageItems;
+  const items = allActs.map((a, i) => renderItem(a, i));
 
   root.innerHTML = `
     <div class="home">
@@ -234,7 +223,7 @@ export function renderActivitiesArchive(root) {
               empty
                 ? `<p class="blog-empty">Noch keine Aktivitäten in dieser Kategorie.</p>`
                 : `
-                  <ul class="blog-grid" data-motion-curtain-group>
+                  <ul class="blog-grid blog-grid--magazine" data-motion-curtain-group>
                     ${items.join("")}
                   </ul>
                   ${renderPagination({ page: safePage, totalPages, cat })}

@@ -1,15 +1,19 @@
 /* ---------------------------------------------------------------------------
  * Reiseblog (Archiv + Single) + 404
  *
- * Magazin-Pattern: 1 Featured-Card + 6er-Grid mit Pills-Filter, Pagination.
- * Single als Magazin-kompakt mit Full-Width-Hero, zwei Spalten (Prose +
- * Sticky-Aside), Related-Grid darunter. Wiederverwendbare Klassen:
+ * Magazin-Pattern: ein einziger Card-Typ (`.blog-card`) für alle Listen.
+ * Das Layout-Verhalten steuert ausschließlich der Container-Modifier
+ * `.blog-grid--magazine` — er promoviert das erste Listen-Item per
+ * `:first-child` zum Featured (Voll-Breite, 2-Spalten-Innen, große Type,
+ * sichtbares CTA). So genügt in WordPress ein einziges Query-Loop-
+ * Template (`loop-card.php`) ohne `if ($i === 0)`-Markup-Switch — die
+ * Theme-Entscheidung "Magazin oder gleichwertig" liegt am Grid-Container.
  *
  *   .blog-hero          — Page-Header (Archiv & Single)
  *   .blog-pills         — Kategorie-Filter
- *   .blog-featured      — großer Hero-Card im Archiv
- *   .blog-card          — Grid-Karte (Archiv + Related)
- *   .blog-grid          — 3-Spalten-Grid
+ *   .blog-grid          — Listen-Container (gleichwertige Karten)
+ *   .blog-grid--magazine— Listen-Container mit Featured-First-Item
+ *   .blog-card          — universelles Karten-Markup
  *   .blog-pagination    — numerische Pagination
  *
  *   .prose-hero         — Full-Width-Hero auf Single
@@ -111,16 +115,14 @@
   border-color: var(--primary);
 }
 
-/* ─── Magazin-Grid (ein einziges Grid, Featured spannt alle Spalten) ──
+/* ─── Listen-Grid ─────────────────────────────────────────────────────────
  *
- * Eine flache `<ul>` mit `<li>`-Kindern. Das Featured-Item liegt in
- * derselben Liste wie die kompakten Karten — kein zusätzlicher
- * Container, semantisch eine zusammenhängende Liste. Per
- * `grid-column: 1 / -1` belegt der Featured-Eintrag alle Spalten.
+ * Eine flache `<ul>` mit `<li>`-Kindern. Standard: gleichwertige Karten,
+ * 1/2/3 Spalten je Viewport.
  *
- * Die zwei Innen-Layouts der Items (`.blog-featured` 2-Spaltig,
- * `.blog-card` 1-Spaltig vertikal) sind unabhängig von der Grid-
- * Komposition; das macht das Ein-/Ausschalten von Featured trivial.
+ * Der Magazin-Modifier `.blog-grid--magazine` ist die einzige Stelle,
+ * an der das erste Item Sonderbehandlung erfährt — alles via
+ * `:first-child`, keine Modifier-Klasse am Item.
  */
 .blog-grid {
   list-style: none;
@@ -146,95 +148,14 @@
 
 .blog-grid__item {
   /* Das `<li>` selbst ist das Grid-Item; das innere `<article>` füllt
-   * es vollständig (min-block-size: 100%). So bleibt die Listen-Semantik
-   * sauber und wir vermeiden die ARIA-Stolpersteine von `display:
-   * contents`. */
+   * es vollständig. So bleibt die Listen-Semantik sauber und wir
+   * vermeiden die ARIA-Stolpersteine von `display: contents`. */
   display: grid;
   min-inline-size: 0;
 }
 
 .blog-grid__item > article {
   inline-size: 100%;
-}
-
-.blog-grid__item--featured {
-  grid-column: 1 / -1;
-}
-
-/* ─── Featured-Card (innere 2-Spalten-Komposition) ───────────────────── */
-
-.blog-featured {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-m);
-  align-items: stretch;
-}
-
-@media (width >= 56rem) {
-  .blog-featured {
-    grid-template-columns: 1.2fr 1fr;
-    gap: var(--space-l);
-    align-items: center;
-  }
-}
-
-.blog-featured__media {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  border-radius: var(--radius);
-  aspect-ratio: 16 / 10;
-  background: rgb(26 35 32 / 0.05);
-}
-
-.blog-featured__media img {
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: cover;
-  transition: transform 600ms var(--ease-out);
-}
-
-.blog-featured__media:hover img,
-.blog-featured__media:focus-visible img {
-  transform: scale(1.03);
-}
-
-.blog-featured__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-s);
-}
-
-.blog-featured__title {
-  margin: 0;
-  font-family: var(--heading-font-family);
-  font-size: clamp(1.5rem, 3vw, 2.125rem);
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-.blog-featured__title a {
-  color: inherit;
-  text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  transition: background-size 300ms var(--ease-out);
-}
-
-.blog-featured__title a:hover,
-.blog-featured__title a:focus-visible {
-  background-size: 100% 1px;
-}
-
-.blog-featured__excerpt {
-  margin: 0;
-  font-size: var(--text-l);
-  line-height: 1.55;
-  color: var(--text-dark-muted);
 }
 
 /* ─── Meta-Zeile ──────────────────────────────────────────────────────── */
@@ -255,8 +176,13 @@
   color: var(--primary);
 }
 
-/* ─── Karten ──────────────────────────────────────────────────────────── */
-
+/* ─── Universal-Card ──────────────────────────────────────────────────────
+ *
+ * Eine Card-Komposition für ALLE Listen — kompakt, vertikaler Stack,
+ * Bild oben. Die Magazin-Sonderbehandlung des ersten Items überschreibt
+ * unten gezielt nur die nötigen Properties (Grid-Innen, Type-Sizes,
+ * Aspect-Ratio, CTA-Sichtbarkeit). Kein zweites Klassen-Set nötig.
+ */
 .blog-card {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -315,6 +241,77 @@
   font-size: var(--text-s);
   color: var(--text-dark-muted);
   line-height: 1.5;
+}
+
+/* CTA per Default unsichtbar — die Karte ist über Media- und Titel-Link
+ * vollständig erreichbar. Wird nur im Magazin-Featured eingeblendet. */
+.blog-card__cta {
+  display: none;
+}
+
+/* ─── Magazin-Featured (erstes Item per :first-child) ──────────────────
+ *
+ * Genau die Selektoren, die der User vorgeschlagen hat: Featured-State
+ * lebt am Parent-Selektor, nicht am Kind. Im WP-Loop genügt es, dem
+ * `<ul>` die `--magazine`-Klasse mitzugeben — das erste rausgepostete
+ * Item bekommt automatisch die große Komposition.
+ *
+ * Spannt alle Grid-Spalten, oberhalb von 56rem zusätzlich 2-spaltiges
+ * Innen-Layout (Bild + Body nebeneinander) und größere Type.
+ */
+.blog-grid--magazine > .blog-grid__item:first-child {
+  grid-column: 1 / -1;
+}
+
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card {
+  gap: var(--space-m);
+}
+
+@media (width >= 56rem) {
+  .blog-grid--magazine > .blog-grid__item:first-child .blog-card {
+    grid-template-columns: 1.2fr 1fr;
+    grid-template-rows: auto;
+    gap: var(--space-l);
+    align-items: center;
+  }
+}
+
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card__media {
+  aspect-ratio: 16 / 10;
+}
+
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card__body {
+  gap: var(--space-s);
+}
+
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card__title {
+  font-size: clamp(1.5rem, 3vw, 2.125rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card__title a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 300ms var(--ease-out);
+}
+
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card__title a:hover,
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card__title a:focus-visible {
+  color: inherit;
+  background-size: 100% 1px;
+}
+
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card__excerpt {
+  font-size: var(--text-l);
+  line-height: 1.55;
+}
+
+.blog-grid--magazine > .blog-grid__item:first-child .blog-card__cta {
+  display: inline-flex;
+  align-self: flex-start;
 }
 
 /* ─── Pagination ──────────────────────────────────────────────────────── */
@@ -710,17 +707,6 @@
 .prose-aside__share-btn:focus-visible {
   border-color: var(--primary);
   color: var(--primary);
-}
-
-.prose-aside__cta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.prose-aside__cta > * {
-  inline-size: 100%;
-  text-align: center;
 }
 
 /* ─── Related ─────────────────────────────────────────────────────────── */

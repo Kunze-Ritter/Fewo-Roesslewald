@@ -19,7 +19,6 @@ import { renderBlocks } from "../components/content-blocks.js";
 import { renderNotFound } from "./not-found.js";
 import {
   escHtml as esc,
-  bookLink,
   headerMarkup,
   footerMarkup,
   skipLinkMarkup,
@@ -78,25 +77,32 @@ function renderShare(post) {
 function renderRelated(currentSlug) {
   const related = getRelatedPosts(currentSlug, 3);
   if (related.length === 0) return "";
+  /**
+   * Identisches Card-Markup wie im Archive — der Unterschied liegt nur
+   * im Container-Modifier (`.blog-grid` ohne `--magazine`), der das
+   * Featured-Verhalten in der Related-Sektion deaktiviert. So bleibt
+   * das Template (in WP: `loop-card.php`) wiederverwendbar.
+   */
   const items = related
     .map(
       (p) => `
         <li class="blog-grid__item">
           <article class="blog-card">
             <a class="blog-card__media" href="/reisefuehrer/${esc(p.slug)}/" aria-labelledby="related-${esc(p.slug)}" data-motion-curtain>
-              <img src="${esc(p.hero.src)}" alt="${esc(p.hero.alt)}" width="800" height="600" loading="lazy" decoding="async" />
+              <img src="${esc(p.hero.src)}" alt="${esc(p.hero.alt)}" width="1600" height="1000" loading="lazy" decoding="async" />
               <span class="motion-curtain" aria-hidden="true"></span>
             </a>
             <div class="blog-card__body">
               <p class="blog-meta">
                 <span class="blog-meta__cat">${esc(getBlogCategoryLabel(p.category))}</span>
                 <span aria-hidden="true">·</span>
-                <span>${esc(String(p.readMinutes))} Min.</span>
+                <span>${esc(String(p.readMinutes))} Min. Lesezeit</span>
               </p>
-              <h3 id="related-${esc(p.slug)}" class="blog-card__title">
+              <h2 id="related-${esc(p.slug)}" class="blog-card__title">
                 <a href="/reisefuehrer/${esc(p.slug)}/">${esc(p.title)}</a>
-              </h3>
+              </h2>
               <p class="blog-card__excerpt">${esc(p.excerpt)}</p>
+              <a class="blog-card__cta home-link" href="/reisefuehrer/${esc(p.slug)}/">Artikel lesen →</a>
             </div>
           </article>
         </li>
@@ -221,9 +227,6 @@ export function renderBlogSingle(root, { params }) {
                   <p class="prose-aside__kicker">Auf einen Blick</p>
                   ${renderHighlights(post.highlights)}
                   ${renderShare(post)}
-                  <div class="prose-aside__cta">
-                    ${bookLink("Verfügbarkeit prüfen")}
-                  </div>
                 </div>
               </aside>
             </div>

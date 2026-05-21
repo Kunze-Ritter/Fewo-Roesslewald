@@ -70,15 +70,27 @@ export function headerMarkup() {
 }
 
 /**
- * Footer mit Brand-Zeile, Quick-Nav und Rechts-Links.
+ * Footer mit globalem Closing-CTA (dunkle, full-bleed Sektion) oben und
+ * Brand-Zeile, Quick-Nav, Legal darunter.
+ *
+ * Der Closing-CTA ist die *eine* Stelle, an der „Verfügbarkeit prüfen"
+ * über alle Seiten konsistent vorkommt — Sticky-Boxes und einzelne
+ * Sektionen verzichten bewusst darauf, um den Button nicht zu spammen.
+ * Same Markup wie früher auf der Home, jetzt jedoch global im Footer.
  */
 export function footerMarkup() {
   return `
     <footer id="kontakt" class="home-footer">
+      <section class="home-block home-block--cta" aria-labelledby="footer-cta-heading" data-etch-element="section">
+        <div class="home-closing" data-etch-element="container" data-motion-intro>
+          <h2 id="footer-cta-heading" class="home-closing__title">Bereit für <em>den Schwarzwald?</em></h2>
+          <p class="home-closing__lead">Schreiben Sie uns. Wir antworten persönlich.</p>
+          <p class="home-closing__cta">${bookLink("Verfügbarkeit prüfen", "btn--primary")}</p>
+        </div>
+      </section>
       <div class="home-footer__grid">
         <p class="home-footer__brand">${escHtml(SITE.name)} · ${escHtml(SITE.tagline)}</p>
         <nav class="home-footer__nav" aria-label="Footer">
-          <a href="${escHtml(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">Buchen<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>
           <a href="/#ferienhaus">Ferienhaus</a>
           <a href="/#wohnungen">Wohnungen</a>
           <a href="/reisefuehrer/">Reiseführer</a>

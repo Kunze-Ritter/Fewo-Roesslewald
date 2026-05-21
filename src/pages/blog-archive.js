@@ -93,58 +93,41 @@ function renderPills(activeCat) {
 /**
  * Rendert einen Listen-Eintrag im Magazin-Grid.
  *
- * Featured und reguläre Karte teilen sich denselben `<li>`-Wrapper.
- * Das Grid selbst entscheidet per `grid-column: 1 / -1` auf dem
- * `.blog-grid__item--featured`, dass die Featured-Karte alle Spalten
- * überspannt — kein extra Container nötig, kein verschachteltes Markup.
+ * Identisches Markup für ALLE Einträge — das erste Item im Grid wird
+ * rein per CSS (`.blog-grid > :first-child`) zum Featured promoviert,
+ * keine Modifier-Klasse. So funktioniert das später in WordPress mit
+ * einem einzigen Query-Loop-Template ohne `if ($i === 0)`-Switches.
  *
- * Die innere Struktur (`.blog-featured` vs `.blog-card`) bleibt
- * unterschiedlich, weil Featured eine 2-Spalten-Komposition (Bild +
- * Body nebeneinander) ist, während die kompakte Karte eine vertikale
- * Stack-Komposition ist.
+ * `index` wird nur für ein paar HTML-Attribute genutzt, die wirklich
+ * positionsabhängig sind (Bild eager laden, fetchpriority, sizes) —
+ * dort hat WordPress später dieselbe Mini-Bedingung.
  *
- * Bewusst kein `data-motion-reveal` auf der Karte — sonst staggern
- * Media und Body asynchron während der Curtain noch läuft. Das
- * Curtain auf der Media reicht.
+ * Bewusst kein `data-motion-reveal` auf der Karte — das Curtain auf der
+ * Media reicht; sonst zieht der Body verzögert hinterher.
  */
-function renderItem(post, { isFeatured = false } = {}) {
-  const headingLevel = isFeatured ? 2 : 3;
-  const itemId = isFeatured ? `featured-${post.slug}` : `card-${post.slug}`;
-  const itemClass = isFeatured
-    ? "blog-grid__item blog-grid__item--featured"
-    : "blog-grid__item";
-  const articleClass = isFeatured ? "blog-featured" : "blog-card";
-  const mediaClass = isFeatured ? "blog-featured__media" : "blog-card__media";
-  const bodyClass = isFeatured ? "blog-featured__body" : "blog-card__body";
-  const titleClass = isFeatured ? "blog-featured__title" : "blog-card__title";
-  const excerptClass = isFeatured ? "blog-featured__excerpt" : "blog-card__excerpt";
-  const imgW = isFeatured ? 1600 : 800;
-  const imgH = isFeatured ? 900 : 600;
-  const loading = isFeatured ? "eager" : "lazy";
-  const fetchPriority = isFeatured ? ' fetchpriority="high"' : "";
-  const readSuffix = isFeatured ? " Lesezeit" : "";
-  const cta = isFeatured
-    ? `<a class="home-link" href="/reisefuehrer/${esc(post.slug)}/">Artikel lesen →</a>`
-    : "";
+function renderItem(post, index = 0) {
+  const isFirst = index === 0;
+  const loading = isFirst ? "eager" : "lazy";
+  const fetchPriority = isFirst ? ' fetchpriority="high"' : "";
 
   return `
-    <li class="${itemClass}">
-      <article class="${articleClass}">
-        <a class="${mediaClass}" href="/reisefuehrer/${esc(post.slug)}/" aria-labelledby="${esc(itemId)}" data-motion-curtain>
-          <img src="${esc(post.hero.src)}" alt="${esc(post.hero.alt)}" width="${imgW}" height="${imgH}" loading="${loading}"${fetchPriority} decoding="async" />
+    <li class="blog-grid__item">
+      <article class="blog-card">
+        <a class="blog-card__media" href="/reisefuehrer/${esc(post.slug)}/" aria-labelledby="post-${esc(post.slug)}" data-motion-curtain>
+          <img src="${esc(post.hero.src)}" alt="${esc(post.hero.alt)}" width="1600" height="1000" loading="${loading}"${fetchPriority} decoding="async" />
           <span class="motion-curtain" aria-hidden="true"></span>
         </a>
-        <div class="${bodyClass}">
+        <div class="blog-card__body">
           <p class="blog-meta">
             <span class="blog-meta__cat">${esc(getBlogCategoryLabel(post.category))}</span>
             <span aria-hidden="true">·</span>
-            <span>${esc(String(post.readMinutes))} Min.${readSuffix}</span>
+            <span>${esc(String(post.readMinutes))} Min. Lesezeit</span>
           </p>
-          <h${headingLevel} id="${esc(itemId)}" class="${titleClass}">
+          <h2 id="post-${esc(post.slug)}" class="blog-card__title">
             <a href="/reisefuehrer/${esc(post.slug)}/">${esc(post.title)}</a>
-          </h${headingLevel}>
-          <p class="${excerptClass}">${esc(post.excerpt)}</p>
-          ${cta}
+          </h2>
+          <p class="blog-card__excerpt">${esc(post.excerpt)}</p>
+          <a class="blog-card__cta home-link" href="/reisefuehrer/${esc(post.slug)}/">Artikel lesen →</a>
         </div>
       </article>
     </li>
@@ -214,13 +197,12 @@ export function renderBlogArchive(root) {
 
   /**
    * Featured + reguläre Karten als eine `<ul>` mit `<li>`-Kindern.
-   * Das Grid ist 3-spaltig auf Desktop, das Featured-Item überspannt
-   * per `grid-column: 1 / -1` alle Spalten. Eine flache, semantische
-   * Liste statt zweier verschachtelter Container.
+   * Das Grid ist 3-spaltig auf Desktop, das erste Item wird per CSS
+   * (`.blog-grid > :first-child`) auf alle Spalten gestreckt — kein
+   * Modifier nötig. Identisches Markup für jedes Item.
    */
-  const items = [];
-  if (featured) items.push(renderItem(featured, { isFeatured: true }));
-  pageItems.forEach((p) => items.push(renderItem(p)));
+  const allPosts = featured ? [featured, ...pageItems] : pageItems;
+  const items = allPosts.map((p, i) => renderItem(p, i));
 
   root.innerHTML = `
     <div class="home">
@@ -249,7 +231,7 @@ export function renderBlogArchive(root) {
               empty
                 ? `<p class="blog-empty">Noch keine Artikel in dieser Kategorie — schauen Sie bald wieder vorbei.</p>`
                 : `
-                  <ul class="blog-grid" data-motion-curtain-group>
+                  <ul class="blog-grid blog-grid--magazine" data-motion-curtain-group>
                     ${items.join("")}
                   </ul>
                   ${renderPagination({ page: safePage, totalPages, cat })}

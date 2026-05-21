@@ -1358,7 +1358,7 @@ body {
   margin-inline-end: 0.35em;
 }
 
-/* ─── Closing-CTA — Container hat text-align center + größeres gap ─── */
+/* ─── Closing-CTA (jetzt im Footer) — Container hat text-align center + größeres gap ─── */
 .home-block--cta {
   position: relative;
   background: var(--primary-dark, #14342a);
@@ -1429,11 +1429,24 @@ body {
   color: var(--primary-dark);
 }
 
-/* ─── Footer ────────────────────────────────────────────────────────── */
+/* ─── Footer ──────────────────────────────────────────────────────────
+ *
+ * Aufbau:
+ *   <footer.home-footer>
+ *     <section.home-block--cta>   ← full-bleed Closing-CTA (Tannengrün)
+ *     <div.home-footer__grid>     ← Brand · Quick-Nav · Legal (heller)
+ *
+ * Der Closing-CTA ist die *einzige* Stelle in den Sub-Seiten-Templates,
+ * an der „Verfügbarkeit prüfen" auftaucht — Sticky-Boxes und einzelne
+ * Sektionen wiederholen ihn bewusst nicht.
+ *
+ * Wichtig: der Footer hat *kein* `padding-inline` mehr, damit die dunkle
+ * CTA-Sektion full-bleed bleibt. Stattdessen liefert der `__grid` selbst
+ * das nötige Inset.
+ */
 .home-footer {
-  padding-block: var(--space-xl);
-  padding-inline: var(--gutter);
-  border-block-start: 1px solid rgb(26 35 32 / 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
 .home-footer__grid {
@@ -1444,6 +1457,8 @@ body {
   inline-size: 100%;
   max-inline-size: var(--content-width);
   margin-inline: auto;
+  padding-block: var(--space-xl);
+  padding-inline: var(--gutter);
 }
 
 @media (width >= 40rem) {

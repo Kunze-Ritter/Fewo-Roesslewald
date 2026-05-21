@@ -1,7 +1,7 @@
 {
   "name": "fewo-roesslewald",
   "version": "1.0.0",
-  "description": "",
+  "description": "Vite-Prototyp für die neue Website der Ferienwohnungen am Rösslewald (Hinterzarten/Breitnau, Hochschwarzwald). Validiert Inhalt, Layout und Animationen vor der Umsetzung in WordPress + Etch + Automatic.css.",
   "type": "module",
   "scripts": {
     "dev": "vite",

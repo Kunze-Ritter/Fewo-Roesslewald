@@ -24,7 +24,6 @@ import { renderBlocks } from "../components/content-blocks.js";
 import { renderNotFound } from "./not-found.js";
 import {
   escHtml as esc,
-  bookLink,
   headerMarkup,
   footerMarkup,
   skipLinkMarkup,
@@ -63,23 +62,29 @@ function renderInfoTable(activity) {
 function renderRelated(currentSlug) {
   const related = getRelatedActivities(currentSlug, 3);
   if (related.length === 0) return "";
+  /**
+   * Identisches Card-Markup wie im Archive — kein Featured-Modifier auf
+   * dem Container (`.blog-grid` ohne `--magazine`), damit alle Related-
+   * Karten gleich groß bleiben.
+   */
   const items = related
     .map(
       (a) => `
         <li class="blog-grid__item">
           <article class="blog-card">
             <a class="blog-card__media" href="/aktivitaeten/${esc(a.slug)}/" aria-labelledby="related-${esc(a.slug)}" data-motion-curtain>
-              <img src="${esc(a.hero.src)}" alt="${esc(a.hero.alt)}" width="800" height="600" loading="lazy" decoding="async" />
+              <img src="${esc(a.hero.src)}" alt="${esc(a.hero.alt)}" width="1600" height="1000" loading="lazy" decoding="async" />
               <span class="motion-curtain" aria-hidden="true"></span>
             </a>
             <div class="blog-card__body">
               <p class="blog-meta">
                 <span class="blog-meta__cat">${esc(getActivityCategoryLabel(a.category))}</span>
               </p>
-              <h3 id="related-${esc(a.slug)}" class="blog-card__title">
+              <h2 id="related-${esc(a.slug)}" class="blog-card__title">
                 <a href="/aktivitaeten/${esc(a.slug)}/">${esc(a.title)}</a>
-              </h3>
+              </h2>
               <p class="blog-card__excerpt">${esc(a.excerpt)}</p>
+              <a class="blog-card__cta home-link" href="/aktivitaeten/${esc(a.slug)}/">Details ansehen →</a>
             </div>
           </article>
         </li>
@@ -252,10 +257,6 @@ export function renderActivitiesSingle(root, { params }) {
                     <span aria-hidden="true">📍</span>
                     ${esc(activity.distanceKm ?? "—")} km vom Rösslewald entfernt
                   </p>
-
-                  <div class="prose-aside__cta">
-                    ${bookLink("Verfügbarkeit prüfen")}
-                  </div>
                 </div>
               </aside>
             </div>

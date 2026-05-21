@@ -444,13 +444,6 @@ export function renderHome(root) {
           </div>
         </section>
 
-        <section class="home-block home-block--cta" aria-labelledby="cta-heading" data-etch-element="section">
-          <div class="home-closing" data-etch-element="container" data-motion-intro>
-            <h2 id="cta-heading" class="home-closing__title">Bereit für <em>den Schwarzwald?</em></h2>
-            <p class="home-closing__lead">Schreiben Sie uns. Wir antworten persönlich.</p>
-            <p class="home-closing__cta">${bookLink("Verfügbarkeit prüfen", "btn--primary")}</p>
-          </div>
-        </section>
       </main>
 
       ${footerMarkup()}
