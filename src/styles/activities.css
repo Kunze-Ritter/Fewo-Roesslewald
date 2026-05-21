@@ -1,0 +1,78 @@
+/* ---------------------------------------------------------------------------
+ * Aktivitäten — Sticky-Box Spezialfälle
+ *
+ * Archive- und Hero-/Prose-/Card-Pattern werden mit blog.css geteilt
+ * (gleicher Magazin-Look). Was hier extra dazukommt:
+ *
+ *   .prose-aside__info       — Infos-DL (Anfahrt, Dauer, Schwierigkeit…)
+ *   .prose-aside__map        — Leaflet-Container
+ *   .prose-aside__map-hint   — kurze Distance-Zeile unter der Map
+ *
+ * Leaflet bringt eigenes CSS mit (per Lazy-Import injiziert). Wir setzen
+ * hier nur unsere Wrapper-Größe und einen ruhigen Rahmen.
+ * --------------------------------------------------------------------------- */
+
+.prose-aside__info {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: var(--space-s);
+  row-gap: 0.45rem;
+  font-size: var(--text-s);
+}
+
+.prose-aside__info dt {
+  font-weight: 600;
+  color: var(--text-dark-muted);
+}
+
+.prose-aside__info dd {
+  margin: 0;
+  color: var(--text-dark);
+}
+
+/* ─── Leaflet-Map-Container ───────────────────────────────────────────── */
+
+.prose-aside__map {
+  inline-size: 100%;
+  block-size: 16rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: rgb(26 35 32 / 0.04);
+}
+
+/**
+ * Leaflet-Internals — die Library nutzt z-indexe für Layer und Controls.
+ * Wir zwingen sie unter unsere Header (`100`) und über reine Karten-
+ * Tiles. Außerdem entfernt sich der Fokus-Outline auf Karten-Klicks
+ * sonst hässlich; wir setzen einen subtilen Outline-Override.
+ */
+.prose-aside__map .leaflet-container {
+  inline-size: 100%;
+  block-size: 100%;
+  font-family: var(--text-font-family);
+  font-size: var(--text-s);
+  background: rgb(26 35 32 / 0.04);
+}
+
+.prose-aside__map .leaflet-control-attribution {
+  background: rgb(255 255 255 / 0.85);
+  font-size: 0.6875rem;
+}
+
+.prose-aside__map .leaflet-popup-content {
+  margin: 0.6rem 0.8rem;
+  font-family: var(--text-font-family);
+  font-size: var(--text-s);
+  line-height: 1.4;
+}
+
+.prose-aside__map-hint {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--text-dark-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}

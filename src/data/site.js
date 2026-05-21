@@ -104,7 +104,8 @@ export const NAV = [
   { label: "Ferienhaus", href: "#ferienhaus" },
   { label: "Wohnungen", href: "#wohnungen" },
   { label: "Ausstattung", href: "#ausstattung" },
-  { label: "Reiseführer", href: "#reisefuehrer" },
+  { label: "Reiseführer", href: "/reisefuehrer/" },
+  { label: "Aktivitäten", href: "/aktivitaeten/" },
   { label: "Kontakt", href: "#kontakt" },
 ];
 

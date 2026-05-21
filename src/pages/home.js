@@ -1,6 +1,5 @@
 import {
   SITE,
-  NAV,
   TRUST,
   HOSTS,
   AMENITIES,
@@ -10,26 +9,15 @@ import {
   REGION,
   BLOG,
 } from "../data/site.js";
-
-function esc(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function navLink(item) {
-  const ext = item.external ? ' target="_blank" rel="noopener noreferrer"' : "";
-  const extHint = item.external
-    ? ' <span class="visually-hidden">(öffnet in neuem Tab)</span>'
-    : "";
-  return `<a href="${esc(item.href)}"${ext}>${esc(item.label)}${extHint}</a>`;
-}
-
-function bookLink(label, className = "btn--primary") {
-  return `<a class="${className}" href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">${esc(label)}<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>`;
-}
+import {
+  escHtml as esc,
+  bookLink,
+  headerMarkup,
+  footerMarkup,
+  skipLinkMarkup,
+  setPageMeta,
+  setCanonical,
+} from "../components/chrome.js";
 
 function vistaSlide(slide, index, total) {
   const srcset = [1280, 1920, 2560]
@@ -212,24 +200,17 @@ export function renderHome(root) {
     )
     .join("");
 
+  setPageMeta({
+    title: "Ferienhaus am Rösslewald — Ferienwohnungen Hinterzarten",
+    description:
+      "Ferienhaus am Rösslewald bei Hinterzarten: Ferienwohnungen Sonnentau (2–6) und Weißtanne (2–4). Sauna, Wallbox, Konus-Karte — jetzt Verfügbarkeit prüfen.",
+  });
+  setCanonical("/");
+
   root.innerHTML = `
     <div class="home">
-      <a class="skip-link" href="#main">Zum Inhalt</a>
-
-      <header class="home-header" data-motion-header>
-        <div class="home-header__row">
-          <a class="home-logo" href="/" aria-label="${esc(SITE.name)} — Startseite">${esc(SITE.name)}</a>
-          <nav class="home-nav" aria-label="Hauptnavigation">${NAV.map(navLink).join("")}</nav>
-          ${bookLink("Verfügbarkeit prüfen", "btn--primary home-header__cta")}
-          <button type="button" class="home-nav-toggle" aria-expanded="false" aria-controls="home-mobile-nav" aria-label="Menü">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-        <nav id="home-mobile-nav" class="home-mobile-nav" hidden aria-label="Mobile Navigation">
-          ${NAV.map(navLink).join("")}
-          ${bookLink("Verfügbarkeit prüfen", "btn--primary")}
-        </nav>
-      </header>
+      ${skipLinkMarkup()}
+      ${headerMarkup()}
 
       <main id="main">
         <section class="home-hero" data-etch-element="section">
@@ -472,20 +453,7 @@ export function renderHome(root) {
         </section>
       </main>
 
-      <footer id="kontakt" class="home-footer">
-        <div class="home-footer__grid">
-          <p class="home-footer__brand">${esc(SITE.name)} · ${esc(SITE.tagline)}</p>
-          <nav class="home-footer__nav" aria-label="Footer">
-            <a href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">Buchen<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>
-            <a href="#ferienhaus">Ferienhaus</a>
-            <a href="#wohnungen">Wohnungen</a>
-            <a href="#bewertungen">Bewertungen</a>
-            <a href="#reisefuehrer">Reiseführer</a>
-          </nav>
-          <p class="home-footer__legal">© ${new Date().getFullYear()} · <a href="/datenschutz/">Datenschutz</a> · <a href="/impressum/">Impressum</a></p>
-        </div>
-      </footer>
+      ${footerMarkup()}
     </div>
   `;
-
 }
