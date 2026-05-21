@@ -141,7 +141,7 @@ export function renderHome(root) {
     (apt) => `
       <article class="home-room" id="wohnung-${esc(apt.slug)}">
         <a class="home-room__media" href="${esc(apt.detailHref)}" aria-label="Details zur Wohnung ${esc(apt.name)}" data-motion-curtain>
-          <img src="${esc(apt.image)}" alt="Ferienwohnung ${esc(apt.name)}" width="900" height="1100" loading="lazy" />
+          <img src="${esc(apt.image)}" alt="Ferienwohnung ${esc(apt.name)}" width="1200" height="900" loading="lazy" />
           <span class="motion-curtain" aria-hidden="true"></span>
           <span class="home-room__price" aria-label="Preis">${esc(apt.priceFrom)}</span>
         </a>

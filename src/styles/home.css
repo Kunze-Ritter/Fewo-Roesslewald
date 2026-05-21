@@ -265,9 +265,12 @@ body {
   object-fit: cover;
 }
 
-/* Section-Head — Block in Container, ACSS gibt das Spacing zwischen
- * Kicker / Heading / Lead via Auto-Content-Gap. */
+/* Section-Head — Kicker / Heading / Lead vertikal mit konsistentem
+ * Content-Gap (überschreibt ACSS-Auto-Content-Gap nur an dieser Stelle). */
 .home-section-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--content-gap);
   max-inline-size: 40rem;
 }
 
@@ -802,7 +805,8 @@ body {
 
 .home-room__media img {
   inline-size: 100%;
-  aspect-ratio: 4 / 5;
+  block-size: auto;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
