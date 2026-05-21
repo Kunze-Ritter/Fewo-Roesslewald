@@ -78,26 +78,28 @@ function renderShare(post) {
 function renderRelated(currentSlug) {
   const related = getRelatedPosts(currentSlug, 3);
   if (related.length === 0) return "";
-  const cards = related
+  const items = related
     .map(
       (p) => `
-        <article class="blog-card">
-          <a class="blog-card__media" href="/reisefuehrer/${esc(p.slug)}/" aria-labelledby="related-${esc(p.slug)}" data-motion-curtain>
-            <img src="${esc(p.hero.src)}" alt="${esc(p.hero.alt)}" width="800" height="600" loading="lazy" decoding="async" />
-            <span class="motion-curtain" aria-hidden="true"></span>
-          </a>
-          <div class="blog-card__body">
-            <p class="blog-meta">
-              <span class="blog-meta__cat">${esc(getBlogCategoryLabel(p.category))}</span>
-              <span aria-hidden="true">·</span>
-              <span>${esc(String(p.readMinutes))} Min.</span>
-            </p>
-            <h3 id="related-${esc(p.slug)}" class="blog-card__title">
-              <a href="/reisefuehrer/${esc(p.slug)}/">${esc(p.title)}</a>
-            </h3>
-            <p class="blog-card__excerpt">${esc(p.excerpt)}</p>
-          </div>
-        </article>
+        <li class="blog-grid__item">
+          <article class="blog-card">
+            <a class="blog-card__media" href="/reisefuehrer/${esc(p.slug)}/" aria-labelledby="related-${esc(p.slug)}" data-motion-curtain>
+              <img src="${esc(p.hero.src)}" alt="${esc(p.hero.alt)}" width="800" height="600" loading="lazy" decoding="async" />
+              <span class="motion-curtain" aria-hidden="true"></span>
+            </a>
+            <div class="blog-card__body">
+              <p class="blog-meta">
+                <span class="blog-meta__cat">${esc(getBlogCategoryLabel(p.category))}</span>
+                <span aria-hidden="true">·</span>
+                <span>${esc(String(p.readMinutes))} Min.</span>
+              </p>
+              <h3 id="related-${esc(p.slug)}" class="blog-card__title">
+                <a href="/reisefuehrer/${esc(p.slug)}/">${esc(p.title)}</a>
+              </h3>
+              <p class="blog-card__excerpt">${esc(p.excerpt)}</p>
+            </div>
+          </article>
+        </li>
       `,
     )
     .join("");
@@ -108,7 +110,7 @@ function renderRelated(currentSlug) {
           <p class="home-kicker">Weiterlesen</p>
           <h2 id="related-heading" class="home-h2">Auch interessant</h2>
         </header>
-        <div class="blog-grid" data-motion-curtain-group>${cards}</div>
+        <ul class="blog-grid" data-motion-curtain-group>${items}</ul>
       </div>
     </section>
   `;

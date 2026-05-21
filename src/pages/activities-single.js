@@ -63,24 +63,26 @@ function renderInfoTable(activity) {
 function renderRelated(currentSlug) {
   const related = getRelatedActivities(currentSlug, 3);
   if (related.length === 0) return "";
-  const cards = related
+  const items = related
     .map(
       (a) => `
-        <article class="blog-card">
-          <a class="blog-card__media" href="/aktivitaeten/${esc(a.slug)}/" aria-labelledby="related-${esc(a.slug)}" data-motion-curtain>
-            <img src="${esc(a.hero.src)}" alt="${esc(a.hero.alt)}" width="800" height="600" loading="lazy" decoding="async" />
-            <span class="motion-curtain" aria-hidden="true"></span>
-          </a>
-          <div class="blog-card__body">
-            <p class="blog-meta">
-              <span class="blog-meta__cat">${esc(getActivityCategoryLabel(a.category))}</span>
-            </p>
-            <h3 id="related-${esc(a.slug)}" class="blog-card__title">
-              <a href="/aktivitaeten/${esc(a.slug)}/">${esc(a.title)}</a>
-            </h3>
-            <p class="blog-card__excerpt">${esc(a.excerpt)}</p>
-          </div>
-        </article>
+        <li class="blog-grid__item">
+          <article class="blog-card">
+            <a class="blog-card__media" href="/aktivitaeten/${esc(a.slug)}/" aria-labelledby="related-${esc(a.slug)}" data-motion-curtain>
+              <img src="${esc(a.hero.src)}" alt="${esc(a.hero.alt)}" width="800" height="600" loading="lazy" decoding="async" />
+              <span class="motion-curtain" aria-hidden="true"></span>
+            </a>
+            <div class="blog-card__body">
+              <p class="blog-meta">
+                <span class="blog-meta__cat">${esc(getActivityCategoryLabel(a.category))}</span>
+              </p>
+              <h3 id="related-${esc(a.slug)}" class="blog-card__title">
+                <a href="/aktivitaeten/${esc(a.slug)}/">${esc(a.title)}</a>
+              </h3>
+              <p class="blog-card__excerpt">${esc(a.excerpt)}</p>
+            </div>
+          </article>
+        </li>
       `,
     )
     .join("");
@@ -91,7 +93,7 @@ function renderRelated(currentSlug) {
           <p class="home-kicker">Auch in der Nähe</p>
           <h2 id="related-activities-heading" class="home-h2">Mehr Aktivitäten</h2>
         </header>
-        <div class="blog-grid" data-motion-curtain-group>${cards}</div>
+        <ul class="blog-grid" data-motion-curtain-group>${items}</ul>
       </div>
     </section>
   `;

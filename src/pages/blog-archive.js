@@ -90,56 +90,64 @@ function renderPills(activeCat) {
   return `${all}${items}`;
 }
 
-function renderFeatured(post) {
-  if (!post) return "";
-  /**
-   * Bewusst kein `data-motion-reveal` auf der Karte — sonst staggern
-   * Media und Body asynchron während der Curtain noch läuft, und der
-   * Body schiebt sich später nach oben als das Bild auftaucht. Wie bei
-   * den Apartment-Cards genügt das Curtain auf der Media, der Body
-   * daneben ist von Anfang an stehen.
-   */
-  return `
-    <article class="blog-featured">
-      <a class="blog-featured__media" href="/reisefuehrer/${esc(post.slug)}/" aria-labelledby="featured-${esc(post.slug)}" data-motion-curtain>
-        <img src="${esc(post.hero.src)}" alt="${esc(post.hero.alt)}" width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
-        <span class="motion-curtain" aria-hidden="true"></span>
-      </a>
-      <div class="blog-featured__body">
-        <p class="blog-meta">
-          <span class="blog-meta__cat">${esc(getBlogCategoryLabel(post.category))}</span>
-          <span aria-hidden="true">·</span>
-          <span>${esc(String(post.readMinutes))} Min. Lesezeit</span>
-        </p>
-        <h2 id="featured-${esc(post.slug)}" class="blog-featured__title">
-          <a href="/reisefuehrer/${esc(post.slug)}/">${esc(post.title)}</a>
-        </h2>
-        <p class="blog-featured__excerpt">${esc(post.excerpt)}</p>
-        <a class="home-link" href="/reisefuehrer/${esc(post.slug)}/">Artikel lesen →</a>
-      </div>
-    </article>
-  `;
-}
+/**
+ * Rendert einen Listen-Eintrag im Magazin-Grid.
+ *
+ * Featured und reguläre Karte teilen sich denselben `<li>`-Wrapper.
+ * Das Grid selbst entscheidet per `grid-column: 1 / -1` auf dem
+ * `.blog-grid__item--featured`, dass die Featured-Karte alle Spalten
+ * überspannt — kein extra Container nötig, kein verschachteltes Markup.
+ *
+ * Die innere Struktur (`.blog-featured` vs `.blog-card`) bleibt
+ * unterschiedlich, weil Featured eine 2-Spalten-Komposition (Bild +
+ * Body nebeneinander) ist, während die kompakte Karte eine vertikale
+ * Stack-Komposition ist.
+ *
+ * Bewusst kein `data-motion-reveal` auf der Karte — sonst staggern
+ * Media und Body asynchron während der Curtain noch läuft. Das
+ * Curtain auf der Media reicht.
+ */
+function renderItem(post, { isFeatured = false } = {}) {
+  const headingLevel = isFeatured ? 2 : 3;
+  const itemId = isFeatured ? `featured-${post.slug}` : `card-${post.slug}`;
+  const itemClass = isFeatured
+    ? "blog-grid__item blog-grid__item--featured"
+    : "blog-grid__item";
+  const articleClass = isFeatured ? "blog-featured" : "blog-card";
+  const mediaClass = isFeatured ? "blog-featured__media" : "blog-card__media";
+  const bodyClass = isFeatured ? "blog-featured__body" : "blog-card__body";
+  const titleClass = isFeatured ? "blog-featured__title" : "blog-card__title";
+  const excerptClass = isFeatured ? "blog-featured__excerpt" : "blog-card__excerpt";
+  const imgW = isFeatured ? 1600 : 800;
+  const imgH = isFeatured ? 900 : 600;
+  const loading = isFeatured ? "eager" : "lazy";
+  const fetchPriority = isFeatured ? ' fetchpriority="high"' : "";
+  const readSuffix = isFeatured ? " Lesezeit" : "";
+  const cta = isFeatured
+    ? `<a class="home-link" href="/reisefuehrer/${esc(post.slug)}/">Artikel lesen →</a>`
+    : "";
 
-function renderCard(post) {
   return `
-    <article class="blog-card">
-      <a class="blog-card__media" href="/reisefuehrer/${esc(post.slug)}/" aria-labelledby="card-${esc(post.slug)}" data-motion-curtain>
-        <img src="${esc(post.hero.src)}" alt="${esc(post.hero.alt)}" width="800" height="600" loading="lazy" decoding="async" />
-        <span class="motion-curtain" aria-hidden="true"></span>
-      </a>
-      <div class="blog-card__body">
-        <p class="blog-meta">
-          <span class="blog-meta__cat">${esc(getBlogCategoryLabel(post.category))}</span>
-          <span aria-hidden="true">·</span>
-          <span>${esc(String(post.readMinutes))} Min.</span>
-        </p>
-        <h3 id="card-${esc(post.slug)}" class="blog-card__title">
-          <a href="/reisefuehrer/${esc(post.slug)}/">${esc(post.title)}</a>
-        </h3>
-        <p class="blog-card__excerpt">${esc(post.excerpt)}</p>
-      </div>
-    </article>
+    <li class="${itemClass}">
+      <article class="${articleClass}">
+        <a class="${mediaClass}" href="/reisefuehrer/${esc(post.slug)}/" aria-labelledby="${esc(itemId)}" data-motion-curtain>
+          <img src="${esc(post.hero.src)}" alt="${esc(post.hero.alt)}" width="${imgW}" height="${imgH}" loading="${loading}"${fetchPriority} decoding="async" />
+          <span class="motion-curtain" aria-hidden="true"></span>
+        </a>
+        <div class="${bodyClass}">
+          <p class="blog-meta">
+            <span class="blog-meta__cat">${esc(getBlogCategoryLabel(post.category))}</span>
+            <span aria-hidden="true">·</span>
+            <span>${esc(String(post.readMinutes))} Min.${readSuffix}</span>
+          </p>
+          <h${headingLevel} id="${esc(itemId)}" class="${titleClass}">
+            <a href="/reisefuehrer/${esc(post.slug)}/">${esc(post.title)}</a>
+          </h${headingLevel}>
+          <p class="${excerptClass}">${esc(post.excerpt)}</p>
+          ${cta}
+        </div>
+      </article>
+    </li>
   `;
 }
 
@@ -204,6 +212,16 @@ export function renderBlogArchive(root) {
 
   const empty = pageItems.length === 0 && !featured;
 
+  /**
+   * Featured + reguläre Karten als eine `<ul>` mit `<li>`-Kindern.
+   * Das Grid ist 3-spaltig auf Desktop, das Featured-Item überspannt
+   * per `grid-column: 1 / -1` alle Spalten. Eine flache, semantische
+   * Liste statt zweier verschachtelter Container.
+   */
+  const items = [];
+  if (featured) items.push(renderItem(featured, { isFeatured: true }));
+  pageItems.forEach((p) => items.push(renderItem(p)));
+
   root.innerHTML = `
     <div class="home">
       ${skipLinkMarkup()}
@@ -231,8 +249,9 @@ export function renderBlogArchive(root) {
               empty
                 ? `<p class="blog-empty">Noch keine Artikel in dieser Kategorie — schauen Sie bald wieder vorbei.</p>`
                 : `
-                  ${renderFeatured(featured)}
-                  ${pageItems.length > 0 ? `<div class="blog-grid" data-motion-curtain-group>${pageItems.map(renderCard).join("")}</div>` : ""}
+                  <ul class="blog-grid" data-motion-curtain-group>
+                    ${items.join("")}
+                  </ul>
                   ${renderPagination({ page: safePage, totalPages, cat })}
                 `
             }

@@ -88,54 +88,54 @@ function metaLine(activity) {
   return parts.join(" · ");
 }
 
-function renderFeatured(act) {
-  if (!act) return "";
-  /**
-   * Kein `data-motion-reveal` auf der Karte — Curtain auf der Media
-   * reicht; sonst zieht der Body verzögert hinterher (siehe Begründung
-   * im Blog-Archive-Featured).
-   */
-  return `
-    <article class="blog-featured">
-      <a class="blog-featured__media" href="/aktivitaeten/${esc(act.slug)}/" aria-labelledby="featured-${esc(act.slug)}" data-motion-curtain>
-        <img src="${esc(act.hero.src)}" alt="${esc(act.hero.alt)}" width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
-        <span class="motion-curtain" aria-hidden="true"></span>
-      </a>
-      <div class="blog-featured__body">
-        <p class="blog-meta">
-          <span class="blog-meta__cat">${esc(getActivityCategoryLabel(act.category))}</span>
-          <span aria-hidden="true">·</span>
-          <span>${esc(metaLine(act))}</span>
-        </p>
-        <h2 id="featured-${esc(act.slug)}" class="blog-featured__title">
-          <a href="/aktivitaeten/${esc(act.slug)}/">${esc(act.title)}</a>
-        </h2>
-        <p class="blog-featured__excerpt">${esc(act.excerpt)}</p>
-        <a class="home-link" href="/aktivitaeten/${esc(act.slug)}/">Details ansehen →</a>
-      </div>
-    </article>
-  `;
-}
+/**
+ * Vereinheitlichter Item-Renderer (Featured + kompakte Karte). Featured-
+ * Item überspannt im Grid alle Spalten (`grid-column: 1 / -1`); die
+ * 2-Spalten-Komposition des Featured liegt komplett innerhalb dieses
+ * einen `<li>`. Spart einen Extra-Wrapper auf der Section-Ebene.
+ *
+ * Begründung „kein `data-motion-reveal`" siehe Blog-Archive.
+ */
+function renderItem(act, { isFeatured = false } = {}) {
+  const headingLevel = isFeatured ? 2 : 3;
+  const itemId = isFeatured ? `featured-${act.slug}` : `card-${act.slug}`;
+  const itemClass = isFeatured
+    ? "blog-grid__item blog-grid__item--featured"
+    : "blog-grid__item";
+  const articleClass = isFeatured ? "blog-featured" : "blog-card";
+  const mediaClass = isFeatured ? "blog-featured__media" : "blog-card__media";
+  const bodyClass = isFeatured ? "blog-featured__body" : "blog-card__body";
+  const titleClass = isFeatured ? "blog-featured__title" : "blog-card__title";
+  const excerptClass = isFeatured ? "blog-featured__excerpt" : "blog-card__excerpt";
+  const imgW = isFeatured ? 1600 : 800;
+  const imgH = isFeatured ? 900 : 600;
+  const loading = isFeatured ? "eager" : "lazy";
+  const fetchPriority = isFeatured ? ' fetchpriority="high"' : "";
+  const cta = isFeatured
+    ? `<a class="home-link" href="/aktivitaeten/${esc(act.slug)}/">Details ansehen →</a>`
+    : "";
 
-function renderCard(act) {
   return `
-    <article class="blog-card">
-      <a class="blog-card__media" href="/aktivitaeten/${esc(act.slug)}/" aria-labelledby="card-${esc(act.slug)}" data-motion-curtain>
-        <img src="${esc(act.hero.src)}" alt="${esc(act.hero.alt)}" width="800" height="600" loading="lazy" decoding="async" />
-        <span class="motion-curtain" aria-hidden="true"></span>
-      </a>
-      <div class="blog-card__body">
-        <p class="blog-meta">
-          <span class="blog-meta__cat">${esc(getActivityCategoryLabel(act.category))}</span>
-          <span aria-hidden="true">·</span>
-          <span>${esc(metaLine(act))}</span>
-        </p>
-        <h3 id="card-${esc(act.slug)}" class="blog-card__title">
-          <a href="/aktivitaeten/${esc(act.slug)}/">${esc(act.title)}</a>
-        </h3>
-        <p class="blog-card__excerpt">${esc(act.excerpt)}</p>
-      </div>
-    </article>
+    <li class="${itemClass}">
+      <article class="${articleClass}">
+        <a class="${mediaClass}" href="/aktivitaeten/${esc(act.slug)}/" aria-labelledby="${esc(itemId)}" data-motion-curtain>
+          <img src="${esc(act.hero.src)}" alt="${esc(act.hero.alt)}" width="${imgW}" height="${imgH}" loading="${loading}"${fetchPriority} decoding="async" />
+          <span class="motion-curtain" aria-hidden="true"></span>
+        </a>
+        <div class="${bodyClass}">
+          <p class="blog-meta">
+            <span class="blog-meta__cat">${esc(getActivityCategoryLabel(act.category))}</span>
+            <span aria-hidden="true">·</span>
+            <span>${esc(metaLine(act))}</span>
+          </p>
+          <h${headingLevel} id="${esc(itemId)}" class="${titleClass}">
+            <a href="/aktivitaeten/${esc(act.slug)}/">${esc(act.title)}</a>
+          </h${headingLevel}>
+          <p class="${excerptClass}">${esc(act.excerpt)}</p>
+          ${cta}
+        </div>
+      </article>
+    </li>
   `;
 }
 
@@ -203,6 +203,10 @@ export function renderActivitiesArchive(root) {
 
   const empty = pageItems.length === 0 && !featured;
 
+  const items = [];
+  if (featured) items.push(renderItem(featured, { isFeatured: true }));
+  pageItems.forEach((a) => items.push(renderItem(a)));
+
   root.innerHTML = `
     <div class="home">
       ${skipLinkMarkup()}
@@ -230,8 +234,9 @@ export function renderActivitiesArchive(root) {
               empty
                 ? `<p class="blog-empty">Noch keine Aktivitäten in dieser Kategorie.</p>`
                 : `
-                  ${renderFeatured(featured)}
-                  ${pageItems.length > 0 ? `<div class="blog-grid" data-motion-curtain-group>${pageItems.map(renderCard).join("")}</div>` : ""}
+                  <ul class="blog-grid" data-motion-curtain-group>
+                    ${items.join("")}
+                  </ul>
                   ${renderPagination({ page: safePage, totalPages, cat })}
                 `
             }

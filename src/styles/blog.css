@@ -111,7 +111,57 @@
   border-color: var(--primary);
 }
 
-/* ─── Featured-Card ───────────────────────────────────────────────────── */
+/* ─── Magazin-Grid (ein einziges Grid, Featured spannt alle Spalten) ──
+ *
+ * Eine flache `<ul>` mit `<li>`-Kindern. Das Featured-Item liegt in
+ * derselben Liste wie die kompakten Karten — kein zusätzlicher
+ * Container, semantisch eine zusammenhängende Liste. Per
+ * `grid-column: 1 / -1` belegt der Featured-Eintrag alle Spalten.
+ *
+ * Die zwei Innen-Layouts der Items (`.blog-featured` 2-Spaltig,
+ * `.blog-card` 1-Spaltig vertikal) sind unabhängig von der Grid-
+ * Komposition; das macht das Ein-/Ausschalten von Featured trivial.
+ */
+.blog-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-m);
+}
+
+@media (width >= 38rem) {
+  .blog-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 60rem) {
+  .blog-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-l);
+  }
+}
+
+.blog-grid__item {
+  /* Das `<li>` selbst ist das Grid-Item; das innere `<article>` füllt
+   * es vollständig (min-block-size: 100%). So bleibt die Listen-Semantik
+   * sauber und wir vermeiden die ARIA-Stolpersteine von `display:
+   * contents`. */
+  display: grid;
+  min-inline-size: 0;
+}
+
+.blog-grid__item > article {
+  inline-size: 100%;
+}
+
+.blog-grid__item--featured {
+  grid-column: 1 / -1;
+}
+
+/* ─── Featured-Card (innere 2-Spalten-Komposition) ───────────────────── */
 
 .blog-featured {
   display: grid;
@@ -205,30 +255,11 @@
   color: var(--primary);
 }
 
-/* ─── Grid + Karten ───────────────────────────────────────────────────── */
-
-.blog-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-m);
-}
-
-@media (width >= 38rem) {
-  .blog-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (width >= 60rem) {
-  .blog-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-l);
-  }
-}
+/* ─── Karten ──────────────────────────────────────────────────────────── */
 
 .blog-card {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr;
   gap: var(--space-s);
 }
 
