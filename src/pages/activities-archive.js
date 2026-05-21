@@ -90,8 +90,13 @@ function metaLine(activity) {
 
 function renderFeatured(act) {
   if (!act) return "";
+  /**
+   * Kein `data-motion-reveal` auf der Karte — Curtain auf der Media
+   * reicht; sonst zieht der Body verzögert hinterher (siehe Begründung
+   * im Blog-Archive-Featured).
+   */
   return `
-    <article class="blog-featured" data-motion-reveal>
+    <article class="blog-featured">
       <a class="blog-featured__media" href="/aktivitaeten/${esc(act.slug)}/" aria-labelledby="featured-${esc(act.slug)}" data-motion-curtain>
         <img src="${esc(act.hero.src)}" alt="${esc(act.hero.alt)}" width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
         <span class="motion-curtain" aria-hidden="true"></span>

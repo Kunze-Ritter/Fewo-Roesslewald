@@ -92,8 +92,15 @@ function renderPills(activeCat) {
 
 function renderFeatured(post) {
   if (!post) return "";
+  /**
+   * Bewusst kein `data-motion-reveal` auf der Karte — sonst staggern
+   * Media und Body asynchron während der Curtain noch läuft, und der
+   * Body schiebt sich später nach oben als das Bild auftaucht. Wie bei
+   * den Apartment-Cards genügt das Curtain auf der Media, der Body
+   * daneben ist von Anfang an stehen.
+   */
   return `
-    <article class="blog-featured" data-motion-reveal>
+    <article class="blog-featured">
       <a class="blog-featured__media" href="/reisefuehrer/${esc(post.slug)}/" aria-labelledby="featured-${esc(post.slug)}" data-motion-curtain>
         <img src="${esc(post.hero.src)}" alt="${esc(post.hero.alt)}" width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
         <span class="motion-curtain" aria-hidden="true"></span>
