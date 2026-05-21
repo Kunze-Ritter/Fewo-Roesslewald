@@ -1,8 +1,0 @@
-# Cloudflare Pages — SPA-Fallback
-#
-# Jede Anfrage, für die keine statische Datei in /dist existiert, wird
-# auf index.html umgeleitet (Status 200, kein Redirect). Der clientseitige
-# Router (src/router.js) übernimmt dann die Route. Ohne diese Zeile
-# bekäme z. B. /reisefuehrer/feldberg-im-sommer-panorama-touren/ bei
-# Direktaufruf einen 404 — denn als statische Datei existiert sie nicht.
-/*    /index.html   200
