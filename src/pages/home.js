@@ -12,6 +12,7 @@ import {
 import {
   escHtml as esc,
   bookLink,
+  withUtm,
   headerMarkup,
   footerMarkup,
   skipLinkMarkup,
@@ -154,7 +155,7 @@ export function renderHome(root) {
           </ul>
           <p class="home-room__actions">
             <a class="btn--secondary btn--outline home-room__details" href="${esc(apt.detailHref)}">Details zur Wohnung</a>
-            <a class="home-link" href="${esc(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">Verfügbarkeit prüfen →<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>
+            <a class="home-link" href="${esc(withUtm(SITE.bookUrl, `rooms-${apt.slug}`))}" target="_blank" rel="noopener noreferrer">Verfügbarkeit prüfen →<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>
           </p>
         </div>
       </article>
@@ -221,7 +222,7 @@ export function renderHome(root) {
             </h1>
             <p class="home-hero__lead">${esc(SITE.hero.lead)}</p>
             <p class="home-hero__cta">
-              ${bookLink("Verfügbarkeit prüfen", "btn--primary")}
+              ${bookLink("Verfügbarkeit prüfen", "btn--primary", "hero-cta")}
             </p>
           </div>
           <figure class="home-hero__visual" data-motion-hero-media data-motion-curtain>
@@ -420,18 +421,40 @@ export function renderHome(root) {
 
         <section id="partner" class="home-block home-block--partner" aria-labelledby="partner-heading" data-etch-element="section">
           <div class="home-partner" data-etch-element="container" data-motion-reveal>
-            <a class="home-partner__logo-link" href="${esc(PARTNER_GOLF.contact.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(PARTNER_GOLF.contact.name)} — Website öffnen (öffnet in neuem Tab)">
-              <img class="home-partner__logo" src="${esc(PARTNER_GOLF.logo.src)}" alt="${esc(PARTNER_GOLF.logo.alt)}" width="${PARTNER_GOLF.logo.width}" height="${PARTNER_GOLF.logo.height}" loading="lazy" decoding="async" />
-            </a>
+            <p class="home-partner__badge">
+              <span class="home-partner__badge-mark" aria-hidden="true"></span>
+              <span class="home-partner__badge-text">${esc(PARTNER_GOLF.badge)}</span>
+            </p>
             <p class="home-kicker">${esc(PARTNER_GOLF.kicker)}</p>
             <h2 id="partner-heading" class="home-h2 home-h2--center">
               ${esc(PARTNER_GOLF.heading)} <em>${esc(PARTNER_GOLF.headingEm)}</em>
             </h2>
             <p class="home-lead home-lead--narrow">${esc(PARTNER_GOLF.lead)}</p>
+
+            <figure class="home-partner__hero" data-motion-zoom-scroll data-motion-curtain>
+              <img
+                src="${esc(PARTNER_GOLF.hero.src)}"
+                alt="${esc(PARTNER_GOLF.hero.alt)}"
+                width="${PARTNER_GOLF.hero.width}"
+                height="${PARTNER_GOLF.hero.height}"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="motion-curtain" aria-hidden="true"></span>
+              <a class="home-partner__hero-logo" href="${esc(withUtm(PARTNER_GOLF.contact.url, "partner-golf-logo"))}" target="_blank" rel="noopener noreferrer" aria-label="${esc(PARTNER_GOLF.contact.name)} — Website öffnen (öffnet in neuem Tab)">
+                <img src="${esc(PARTNER_GOLF.logo.src)}" alt="${esc(PARTNER_GOLF.logo.alt)}" width="${PARTNER_GOLF.logo.width}" height="${PARTNER_GOLF.logo.height}" loading="lazy" decoding="async" />
+              </a>
+            </figure>
+
             <ul class="home-partner__notes" aria-label="Vorteile auf einen Blick">
               ${partnerNotes}
             </ul>
             <p class="home-partner__hint">${esc(PARTNER_GOLF.bookingHint)}</p>
+
+            <p class="home-partner__cta">
+              <a class="btn btn--outline" href="${esc(PARTNER_GOLF.detailHref)}">${esc(PARTNER_GOLF.detailLabel)} →</a>
+            </p>
+
             <p class="home-partner__contact">
               <strong>${esc(partnerContact.name)}</strong>
               <span aria-hidden="true">·</span>
@@ -439,7 +462,7 @@ export function renderHome(root) {
               <span aria-hidden="true">·</span>
               <a href="tel:${esc(partnerContact.phone.replace(/\s+/g, ""))}">${esc(partnerContact.phoneDisplay)}</a>
               <span aria-hidden="true">·</span>
-              <a href="${esc(partnerContact.url)}" target="_blank" rel="noopener noreferrer">${esc(partnerContact.urlDisplay)}<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>
+              <a href="${esc(withUtm(partnerContact.url, "partner-golf-link"))}" target="_blank" rel="noopener noreferrer">${esc(partnerContact.urlDisplay)}<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>
             </p>
           </div>
         </section>

@@ -209,19 +209,32 @@ export const AMENITIES = [
  * gc-hsw.de (Lage, Golfschule, Gastronomie).
  */
 export const PARTNER_GOLF = {
-  kicker: "Premium-Partner",
-  heading: "Golfen am Hochschwarzwald —",
-  headingEm: "ohne Greenfee.",
+  /** „Anerkannter Premium-Gastgeber" — offizieller Status, von
+   * golfurlaubimschwarzwald.de vergeben. Wird als Badge gezeigt. */
+  badge: "Anerkannter Premium-Gastgeber",
+  kicker: "Unser Partner",
+  heading: "Greenfeefrei golfen",
+  headingEm: "am Hochschwarzwald.",
   lead:
-    "Als Premium-Partner des Golfclub Hochschwarzwald e.V. spielen unsere Gäste greenfeefrei auf der 18-Loch-Anlage „Himmlische Hölle“ — 500 Meter vom Titisee, 30 Minuten von Freiburg.",
-  /** Inline-Notes: drei prägnante Punkte, durch „·“ getrennt gerendert. */
+    "Als anerkannter Premium-Gastgeber des Golfclubs Hochschwarzwald e.V. spielen unsere Gäste auf der 18-Loch-Anlage „Himmlische Hölle“ ohne Greenfee — ab der ersten Übernachtung, an allen Wochentagen.",
+  /** Hero-Bild der Anlage (vom Golfclub geladen, lokal abgelegt). */
+  hero: {
+    src: "/img/partner-gc-hsw-platz.webp",
+    alt: "Golfplatz des GC Hochschwarzwald am Titisee — Fairway mit Schwarzwald-Panorama",
+    width: 1920,
+    height: 1080,
+  },
+  /** Drei prägnante Vorteile — kurze Stichpunkte, kein Marketing-Sprech. */
   notes: [
-    "Greenfee-frei für unsere Gäste · Mo–So",
-    "10 % Rabatt für GC-HSW-Mitglieder bei Direktbuchung",
-    "Schnupperkurs, Platzreife und „Golfstüble“ — auch für Nichtgolfer",
+    "Greenfee-frei · Mo–So · keine Tagesbegrenzung",
+    "Schnupperkurs & Platzreife mit Golfprofessional vor Ort",
+    "Golfstüble mit Sonnenterrasse — auch für Nichtgolfer",
   ],
-  /** Hinweis-Zeile mit Buchungs-Code für GC-HSW-Mitglieder. */
-  bookingHint: "Mitglieder bitte bei der Buchung „Mitglied GC HSW“ angeben.",
+  bookingHint:
+    "Bei der Anmeldung im Sekretariat „Premium-Gastgeber Rösslewald“ angeben.",
+  /** Link auf den ausführlichen Activity-Eintrag. */
+  detailHref: "/aktivitaeten/golfen-am-hochschwarzwald/",
+  detailLabel: "Mehr erfahren",
   /** Vereins-Logo (vom Original gc-hsw.de geladen, lokal abgelegt). */
   logo: {
     src: "/img/partner-gc-hsw.png",

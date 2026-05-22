@@ -19,6 +19,7 @@ export const ACTIVITY_CATEGORIES = [
   { slug: "see", label: "See" },
   { slug: "kultur", label: "Kultur" },
   { slug: "genuss", label: "Genuss" },
+  { slug: "sport", label: "Sport" },
 ];
 
 /** Anker-Koordinaten Rösslewald / Hinterzarten — Map-Default-Center. */
@@ -255,6 +256,75 @@ export const ACTIVITIES = [
         title: "Sonnenuntergangs-Tipp",
         text:
           "Letzte Bergfahrt prüfen — bei guter Sicht ist der Sonnenuntergang vom Turm ein Höhepunkt der Reise. Warme Jacke einpacken, oben ist es immer kühler.",
+      },
+    ],
+  },
+  {
+    slug: "golfen-am-hochschwarzwald",
+    title: "Golfen am Hochschwarzwald — als Partner-Gast greenfeefrei",
+    excerpt:
+      "Als anerkannter Premium-Gastgeber des Golfclub Hochschwarzwald e.V. spielen unsere Gäste ohne Greenfee auf der 18-Loch-Anlage „Himmlische Hölle“.",
+    category: "sport",
+    featured: false,
+    hero: {
+      src: "/img/partner-gc-hsw-platz.webp",
+      alt: "18-Loch-Anlage des Golfclub Hochschwarzwald am Titisee",
+    },
+    coordinates: { lat: 47.8916, lng: 8.1762 },
+    distanceKm: 14,
+    travelMinutes: 20,
+    duration: "Halbtag bis Ganztag",
+    difficulty: "Für Anfänger geeignet",
+    season: ["Frühjahr", "Sommer", "Herbst"],
+    highlights: [
+      "Greenfee-frei für unsere Gäste · Mo–So",
+      "18 Loch · 500 m vom Titisee",
+      "Schnupperkurs, Platzreife & Golfstüble",
+    ],
+    practicalInfo: {
+      address: "Golfclub Hochschwarzwald e.V., Oberaltenweg 7, 79822 Titisee-Neustadt",
+      parking: "Direkt am Clubhaus, kostenfrei",
+      bestTime: "Mai bis Oktober · Startzeit vorab online reservieren",
+      transit: "Mit Konus-Karte bis Titisee, dann ~10 Min. Taxi",
+    },
+    content: [
+      {
+        type: "callout",
+        title: "Was ist eine „Greenfee“?",
+        text:
+          "Die Greenfee ist die Tagesgebühr, die Gäste eines Golfclubs für eine Runde bezahlen — auf vergleichbaren 18-Loch-Anlagen sind das je nach Wochentag 60–90 € pro Person. Für unsere Gäste entfällt diese Gebühr komplett. Sie bezahlen lediglich Trolley oder E-Cart, wenn gewünscht.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "Der Golfclub Hochschwarzwald e.V. ist eine 18-Loch-Anlage zwischen Titisee und Hinterzarten — eingebettet in sanfte Hügel, mit Biotopen, Bachläufen und Blick auf den Schwarzwald. „Himmlische Hölle“ heißt der Platz nicht ohne Grund: technisch anspruchsvoll, aber landschaftlich so schön, dass auch Anfänger sich willkommen fühlen.",
+      },
+      { type: "heading", level: 2, text: "Greenfeefrei — und das heißt was?" },
+      {
+        type: "paragraph",
+        text:
+          "Als Premium-Gastgeber des Golfclubs Hochschwarzwald e.V. ist der Rösslewald einer der wenigen Vermieter im Hochschwarzwald, dessen Gäste auf der Anlage ohne Greenfee spielen — ab der ersten Übernachtung, an allen Wochentagen. Das spart bei einer Woche schnell mehrere hundert Euro pro Person.",
+      },
+      {
+        type: "list",
+        items: [
+          "Greenfee-frei für unsere Gäste · Mo–So · keine Tagesbegrenzung",
+          "10 % Rabatt auf den Mitgliedsbeitrag für GC-HSW-Mitglieder bei Direktbuchung",
+          "Startzeiten direkt beim Club online reservieren",
+          "Bei Buchung „Aufenthalt am Rösslewald“ angeben — wir sind dort als Premium-Gastgeber hinterlegt",
+        ],
+      },
+      { type: "heading", level: 2, text: "Auch für Einsteiger & Nichtgolfer" },
+      {
+        type: "paragraph",
+        text:
+          "Der Club bietet Schnupperkurse und Platzreifekurse (deutsche und schweizer Platzreife) mit Golfprofessional Cédric Steiner an — perfekt für Erstbesucher, die mal hineinschnuppern wollen. Und wer nicht spielen mag: das „Golfstüble“ mit Sonnenterrasse ist auch für Nichtgolfer geöffnet — selbstgebackene Kuchen, Aussicht inklusive.",
+      },
+      {
+        type: "callout",
+        title: "So planen Sie Ihren Golftag",
+        text:
+          "1) Bei uns am Rösslewald buchen. 2) Beim Club online eine Startzeit reservieren (oder kurz anrufen: 07651 / 935777). 3) Bei der Ankunft im Sekretariat „Premium-Gastgeber Rösslewald“ angeben. Schläger und E-Cart können vor Ort geliehen werden.",
       },
     ],
   },

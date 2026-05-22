@@ -18,6 +18,40 @@ export function escHtml(s) {
 }
 
 /**
+ * UTM-Tracking — hängt Standard-UTM-Parameter an externe http(s)-Links
+ * an, damit das Buchungs-Backend bzw. Partner-Sites erkennen können,
+ * dass ein Lead von der Rösslewald-Site kommt.
+ *
+ * - Interne Pfade, `tel:`, `mailto:`, `#`-Anker bleiben unberührt.
+ * - Eigene Domain (fewo-roesslewald.de) wird nicht getaggt.
+ * - Bestehende UTMs auf der Ziel-URL werden respektiert (kein Overwrite),
+ *   damit ggf. manuell gesetzte Tracking-Parameter erhalten bleiben.
+ */
+const UTM_DEFAULTS = {
+  utm_source: "roesslewald.de",
+  utm_medium: "referral",
+  utm_campaign: "website",
+};
+
+export function withUtm(href, content) {
+  if (!href || typeof href !== "string") return href;
+  if (!/^https?:\/\//i.test(href)) return href;
+  try {
+    const url = new URL(href);
+    if (/(^|\.)fewo-roesslewald\.de$/i.test(url.hostname)) return href;
+    for (const [key, value] of Object.entries(UTM_DEFAULTS)) {
+      if (!url.searchParams.has(key)) url.searchParams.set(key, value);
+    }
+    if (content && !url.searchParams.has("utm_content")) {
+      url.searchParams.set("utm_content", content);
+    }
+    return url.toString();
+  } catch {
+    return href;
+  }
+}
+
+/**
  * Normalisiert Nav-`href`s so, dass reine Hash-Anker (`#xyz`) als
  * absolute Pfade auf die Home verweisen. Andere Pfade bleiben so wie
  * sie sind. Dadurch funktioniert die Hauptnavigation einheitlich auf
@@ -41,9 +75,13 @@ function navLink(item) {
 
 /**
  * Standard-Buchungs-Button. Öffnet immer in neuem Tab (externer Host).
+ * `content` landet als `utm_content` an der Ziel-URL, damit wir später
+ * sehen können, von welcher Position der Lead kam (z. B. "header-cta",
+ * "footer-cta", "rooms-card").
  */
-export function bookLink(label = "Verfügbarkeit prüfen", className = "btn--primary") {
-  return `<a class="${className}" href="${escHtml(SITE.bookUrl)}" target="_blank" rel="noopener noreferrer">${escHtml(label)}<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>`;
+export function bookLink(label = "Verfügbarkeit prüfen", className = "btn--primary", content = "book-cta") {
+  const href = withUtm(SITE.bookUrl, content);
+  return `<a class="${className}" href="${escHtml(href)}" target="_blank" rel="noopener noreferrer">${escHtml(label)}<span class="visually-hidden"> (öffnet in neuem Tab)</span></a>`;
 }
 
 /**
@@ -56,14 +94,14 @@ export function headerMarkup() {
       <div class="home-header__row">
         <a class="home-logo" href="/" aria-label="${escHtml(SITE.name)} — Startseite">${escHtml(SITE.name)}</a>
         <nav class="home-nav" aria-label="Hauptnavigation">${NAV.map(navLink).join("")}</nav>
-        ${bookLink("Verfügbarkeit prüfen", "btn--primary home-header__cta")}
+        ${bookLink("Verfügbarkeit prüfen", "btn--primary home-header__cta", "header-cta")}
         <button type="button" class="home-nav-toggle" aria-expanded="false" aria-controls="home-mobile-nav" aria-label="Menü">
           <span></span><span></span><span></span>
         </button>
       </div>
       <nav id="home-mobile-nav" class="home-mobile-nav" hidden aria-label="Mobile Navigation">
         ${NAV.map(navLink).join("")}
-        ${bookLink("Verfügbarkeit prüfen", "btn--primary")}
+        ${bookLink("Verfügbarkeit prüfen", "btn--primary", "mobile-nav-cta")}
       </nav>
     </header>
   `;
@@ -85,7 +123,7 @@ export function footerMarkup() {
         <div class="home-closing" data-etch-element="container" data-motion-intro>
           <h2 id="footer-cta-heading" class="home-closing__title">Bereit für <em>den Schwarzwald?</em></h2>
           <p class="home-closing__lead">Schreiben Sie uns. Wir antworten persönlich.</p>
-          <p class="home-closing__cta">${bookLink("Verfügbarkeit prüfen", "btn--primary")}</p>
+          <p class="home-closing__cta">${bookLink("Verfügbarkeit prüfen", "btn--primary", "footer-cta")}</p>
         </div>
       </section>
       <div class="home-footer__grid">

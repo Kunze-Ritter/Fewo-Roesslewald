@@ -1043,50 +1043,112 @@ body {
   opacity: 0.6;
 }
 
-/* ─── Premium-Partner — Editorial Centered ──────────────────────────────
- * Steht direkt vor der Closing-CTA und übernimmt deren Rhythmus: Kicker,
- * Heading, Lead, eine knappe Notes-Zeile mit „·"-Separatoren, ein
- * Buchungs-Hinweis und der Kontakt-Block als feiner Inline-Footer.
+/* ─── Premium-Partner — Editorial mit Hero-Bild ──────────────────────
+ * „Premium-Gastgeber"-Sektion mit ruhigem Champagner-Hintergrund,
+ * großem Hero-Bild der Golfanlage, Greenfee-Aside zur Begriffsklärung
+ * und CTA auf den ausführlichen Activity-Eintrag.
  *
- * Bewusst keine Card- oder Hintergrund-Tönung — der Block fügt sich
- * ruhig in den Seitenrhythmus ein. Die Hierarchie kommt allein aus
- * Typografie und vertikalen Abständen.
+ * Die Section selbst trägt einen warmen Beige-Ton (--partner-bg) als
+ * dezenten Akzent — hebt sich vom restlichen Cream ab, ohne aufdringlich
+ * zu wirken. Akzentfarbe für Badge/Linien ist ein gedämpftes Champagner-
+ * Gold (--partner-accent), das gut neben dem Brand-Grün steht.
  */
+.home-block--partner {
+  --partner-bg: oklch(0.96 0.015 80);
+  --partner-accent: oklch(0.62 0.06 75);
+  --partner-line: oklch(0.62 0.06 75 / 0.35);
+  background: var(--partner-bg);
+}
+
 .home-partner {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: var(--space-s);
-  max-inline-size: 50rem;
+  max-inline-size: 62rem;
   margin-inline: auto;
 }
 
-/* Vereins-Logo als optischer Anker. Es ist farbig (Brand-Grün +
- * blaue Titisee-Wellen) und schon "vereinstreu" — kein Tint nötig.
- * Klickbar verlinkt auf die Vereins-Website. */
-.home-partner__logo-link {
-  display: inline-block;
-  margin-block-end: var(--space-xs);
+/* Premium-Gastgeber-Badge — feine, serifige Lettern auf einer dünnen
+ * Linie. Das Bullet-Mark links ist ein kleiner Akzent in Champagner-Gold. */
+.home-partner__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding-block: 0.4rem;
+  padding-inline: 1.1rem;
+  border: 1px solid var(--partner-line);
+  border-radius: 999px;
+  font-family: var(--heading-font-family);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--partner-accent);
+}
+
+.home-partner__badge-mark {
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
   border-radius: 50%;
+  background: var(--partner-accent);
+}
+
+/* Hero-Bild — full-width im Container, Logo als Overlay rechts unten.
+ * Radius + overflow am Parent (figure), Bild selbst flach (Token-Cascade). */
+.home-partner__hero {
+  position: relative;
+  inline-size: 100%;
+  margin: var(--space-s) 0 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1.5rem 3rem rgb(26 35 32 / 0.12);
+}
+
+.home-partner__hero > * {
+  --radius: 0;
+}
+
+.home-partner__hero img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.home-partner__hero-logo {
+  position: absolute;
+  inset-block-end: var(--space-m);
+  inset-inline-end: var(--space-m);
+  display: grid;
+  place-items: center;
+  inline-size: 4.5rem;
+  block-size: 4.5rem;
+  padding: 0.6rem;
+  background: rgb(255 255 255 / 0.92);
+  border-radius: 50%;
+  box-shadow: 0 0.5rem 1.5rem rgb(26 35 32 / 0.15);
   transition: transform var(--duration-fast) var(--ease-out);
 }
 
-.home-partner__logo-link:hover,
-.home-partner__logo-link:focus-visible {
-  transform: scale(1.04);
+.home-partner__hero-logo:hover,
+.home-partner__hero-logo:focus-visible {
+  transform: scale(1.05);
 }
 
-.home-partner__logo {
+.home-partner__hero-logo img {
   display: block;
-  inline-size: 7rem;
+  inline-size: 100%;
   block-size: auto;
   aspect-ratio: 1 / 1;
 }
 
 @media (width >= 48rem) {
-  .home-partner__logo {
-    inline-size: 8rem;
+  .home-partner__hero-logo {
+    inline-size: 5.5rem;
+    block-size: 5.5rem;
   }
 }
 
@@ -1122,8 +1184,8 @@ body {
     content: "·";
     position: absolute;
     inset-inline-start: calc(-0.625rem - 1px);
-    color: var(--primary);
-    opacity: 0.6;
+    color: var(--partner-accent);
+    opacity: 0.8;
   }
 }
 
@@ -1134,10 +1196,14 @@ body {
   font-style: italic;
 }
 
+.home-partner__cta {
+  margin: var(--space-m) 0 0;
+}
+
 .home-partner__contact {
   margin: var(--space-m) 0 0;
   padding-block-start: var(--space-s);
-  border-block-start: 1px solid rgb(26 35 32 / 0.1);
+  border-block-start: 1px solid var(--partner-line);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -1164,7 +1230,7 @@ body {
 
 .home-partner__contact a:hover,
 .home-partner__contact a:focus-visible {
-  color: var(--primary);
+  color: var(--partner-accent);
 }
 
 /* ─── Reiseführer / Journal — Magazin-Layout ────────────────────────── */

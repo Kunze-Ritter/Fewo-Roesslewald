@@ -14,15 +14,15 @@
   box-shadow: 0 20px 48px rgb(26 35 32 / 0.14);
 }
 
-/* Token-Cascade: Kinder erhalten `--radius: 0`, damit alle ACSS-Defaults
- * (img, figure, video-skin etc.), die `var(--radius)` referenzieren,
- * hier automatisch flach werden — sicherer als jede Eigenschaft einzeln
- * zurückzusetzen. */
-.video-player-wrap > * {
-  --radius: 0;
-}
-
+/* Token-Cascade: `--radius: 0` am Video-Player reicht — Custom-Properties
+ * vererben sich auf alle Nachfahren, also werden auch geschachtelte
+ * ACSS-Defaults (img, figure, video-skin etc.) automatisch flach.
+ * `--media-video-border-radius` kommt aus Video.js / media-chrome und
+ * muss separat geneutralisiert werden. */
 .fewo-video-player {
+  --radius: 0;
+  --media-border-radius: 0;
+  --media-video-border-radius: 0;
   display: block;
   inline-size: 100%;
   block-size: 100%;

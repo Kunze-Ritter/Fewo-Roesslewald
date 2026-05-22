@@ -40,7 +40,7 @@ export function renderNotFound(root, { path } = {}) {
               <a class="btn btn--outline" href="/">Zur Startseite</a>
               <a class="btn btn--outline" href="/reisefuehrer/">Reiseführer</a>
               <a class="btn btn--outline" href="/aktivitaeten/">Aktivitäten</a>
-              ${bookLink("Verfügbarkeit prüfen")}
+              ${bookLink("Verfügbarkeit prüfen", "btn--primary", "404-cta")}
             </p>
           </div>
         </section>
