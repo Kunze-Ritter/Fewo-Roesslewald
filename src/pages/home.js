@@ -421,10 +421,6 @@ export function renderHome(root) {
 
         <section id="partner" class="home-block home-block--partner" aria-labelledby="partner-heading" data-etch-element="section">
           <div class="home-partner" data-etch-element="container" data-motion-reveal>
-            <p class="home-partner__badge">
-              <span class="home-partner__badge-mark" aria-hidden="true"></span>
-              <span class="home-partner__badge-text">${esc(PARTNER_GOLF.badge)}</span>
-            </p>
             <p class="home-kicker">${esc(PARTNER_GOLF.kicker)}</p>
             <h2 id="partner-heading" class="home-h2 home-h2--center">
               ${esc(PARTNER_GOLF.heading)} <em>${esc(PARTNER_GOLF.headingEm)}</em>

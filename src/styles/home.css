@@ -1070,31 +1070,6 @@ body {
   margin-inline: auto;
 }
 
-/* Premium-Gastgeber-Badge — feine, serifige Lettern auf einer dünnen
- * Linie. Das Bullet-Mark links ist ein kleiner Akzent in Champagner-Gold. */
-.home-partner__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin: 0;
-  padding-block: 0.4rem;
-  padding-inline: 1.1rem;
-  border: 1px solid var(--partner-line);
-  border-radius: 999px;
-  font-family: var(--heading-font-family);
-  font-size: var(--text-xs);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--partner-accent);
-}
-
-.home-partner__badge-mark {
-  inline-size: 0.4rem;
-  block-size: 0.4rem;
-  border-radius: 50%;
-  background: var(--partner-accent);
-}
-
 /* Hero-Bild — full-width im Container, Logo als Overlay rechts unten.
  * Radius + overflow am Parent (figure), Bild selbst flach (Token-Cascade). */
 .home-partner__hero {

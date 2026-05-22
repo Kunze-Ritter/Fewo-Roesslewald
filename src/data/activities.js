@@ -289,12 +289,6 @@ export const ACTIVITIES = [
     },
     content: [
       {
-        type: "callout",
-        title: "Was ist eine „Greenfee“?",
-        text:
-          "Die Greenfee ist die Tagesgebühr, die Gäste eines Golfclubs für eine Runde bezahlen — auf vergleichbaren 18-Loch-Anlagen sind das je nach Wochentag 60–90 € pro Person. Für unsere Gäste entfällt diese Gebühr komplett. Sie bezahlen lediglich Trolley oder E-Cart, wenn gewünscht.",
-      },
-      {
         type: "paragraph",
         text:
           "Der Golfclub Hochschwarzwald e.V. ist eine 18-Loch-Anlage zwischen Titisee und Hinterzarten — eingebettet in sanfte Hügel, mit Biotopen, Bachläufen und Blick auf den Schwarzwald. „Himmlische Hölle“ heißt der Platz nicht ohne Grund: technisch anspruchsvoll, aber landschaftlich so schön, dass auch Anfänger sich willkommen fühlen.",
@@ -303,7 +297,7 @@ export const ACTIVITIES = [
       {
         type: "paragraph",
         text:
-          "Als Premium-Gastgeber des Golfclubs Hochschwarzwald e.V. ist der Rösslewald einer der wenigen Vermieter im Hochschwarzwald, dessen Gäste auf der Anlage ohne Greenfee spielen — ab der ersten Übernachtung, an allen Wochentagen. Das spart bei einer Woche schnell mehrere hundert Euro pro Person.",
+          "Die Greenfee ist die Tagesgebühr, die Gäste eines Golfclubs für eine Runde bezahlen — bei vergleichbaren 18-Loch-Anlagen je nach Wochentag 60 bis 90 € pro Person. Als anerkannter Premium-Gastgeber des Golfclubs Hochschwarzwald e.V. entfällt sie für unsere Gäste komplett: ab der ersten Übernachtung, an allen Wochentagen, ohne Tagesbegrenzung. Sie bezahlen lediglich Trolley oder E-Cart, wenn gewünscht — bei einem Wochenaufenthalt spart das schnell mehrere hundert Euro pro Person.",
       },
       {
         type: "list",

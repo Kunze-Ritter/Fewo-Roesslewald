@@ -209,9 +209,6 @@ export const AMENITIES = [
  * gc-hsw.de (Lage, Golfschule, Gastronomie).
  */
 export const PARTNER_GOLF = {
-  /** „Anerkannter Premium-Gastgeber" — offizieller Status, von
-   * golfurlaubimschwarzwald.de vergeben. Wird als Badge gezeigt. */
-  badge: "Anerkannter Premium-Gastgeber",
   kicker: "Unser Partner",
   heading: "Greenfeefrei golfen",
   headingEm: "am Hochschwarzwald.",
