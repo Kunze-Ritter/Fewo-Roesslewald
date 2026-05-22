@@ -315,10 +315,14 @@ export const ACTIVITIES = [
           "Der Club bietet Schnupperkurse und Platzreifekurse (deutsche und schweizer Platzreife) mit Golfprofessional Cédric Steiner an — perfekt für Erstbesucher, die mal hineinschnuppern wollen. Und wer nicht spielen mag: das „Golfstüble“ mit Sonnenterrasse ist auch für Nichtgolfer geöffnet — selbstgebackene Kuchen, Aussicht inklusive.",
       },
       {
-        type: "callout",
+        type: "steps",
         title: "So planen Sie Ihren Golftag",
-        text:
-          "1) Bei uns am Rösslewald buchen. 2) Beim Club online eine Startzeit reservieren (oder kurz anrufen: 07651 / 935777). 3) Bei der Ankunft im Sekretariat „Premium-Gastgeber Rösslewald“ angeben. Schläger und E-Cart können vor Ort geliehen werden.",
+        items: [
+          "Bei uns am Rösslewald buchen.",
+          "Beim Club online eine Startzeit reservieren — oder kurz anrufen: 07651 / 935777.",
+          "Bei der Ankunft im Sekretariat „Premium-Gastgeber Rösslewald“ angeben.",
+        ],
+        footnote: "Schläger und E-Cart können vor Ort geliehen werden.",
       },
     ],
   },

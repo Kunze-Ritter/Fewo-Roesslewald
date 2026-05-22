@@ -13,6 +13,7 @@
  *  - list      { items: string[] }            (ungeordnete Liste)
  *  - callout   { title?, text }               (Tipp-/Hinweis-Box)
  *  - quote     { text, attribution? }
+ *  - steps     { title?, items: string[], footnote? } (nummerierte Anleitung)
  */
 import { escHtml } from "./chrome.js";
 
@@ -69,6 +70,31 @@ function renderQuote(block) {
   `;
 }
 
+function renderSteps(block) {
+  const items = (block.items ?? [])
+    .map(
+      (text) => `
+      <li class="prose__steps-item">
+        <span class="prose__steps-text">${escHtml(text)}</span>
+      </li>
+    `,
+    )
+    .join("");
+  const title = block.title
+    ? `<p class="prose__steps-title">${escHtml(block.title)}</p>`
+    : "";
+  const footnote = block.footnote
+    ? `<p class="prose__steps-note">${escHtml(block.footnote)}</p>`
+    : "";
+  return `
+    <section class="prose__steps">
+      ${title}
+      <ol class="prose__steps-list">${items}</ol>
+      ${footnote}
+    </section>
+  `;
+}
+
 const RENDERERS = {
   heading: renderHeading,
   paragraph: renderParagraph,
@@ -76,6 +102,7 @@ const RENDERERS = {
   list: renderList,
   callout: renderCallout,
   quote: renderQuote,
+  steps: renderSteps,
 };
 
 /**
