@@ -4,23 +4,33 @@
   padding-block: var(--section-space-m);
 }
 
+/* Radius + overflow nur am Parent — Kinder erben den Cut über
+ * overflow:hidden. ACSS-Token `--radius` für globale Konsistenz. */
 .video-player-wrap {
-  border-radius: calc(var(--radius) * 1.5);
+  border-radius: var(--radius);
   overflow: hidden;
   background: var(--base-dark);
   aspect-ratio: 16 / 9;
   box-shadow: 0 20px 48px rgb(26 35 32 / 0.14);
 }
 
+/* Token-Cascade: Kinder erhalten `--radius: 0`, damit alle ACSS-Defaults
+ * (img, figure, video-skin etc.), die `var(--radius)` referenzieren,
+ * hier automatisch flach werden — sicherer als jede Eigenschaft einzeln
+ * zurückzusetzen. */
+.video-player-wrap > * {
+  --radius: 0;
+}
+
 .fewo-video-player {
   display: block;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .fewo-video-player video-skin {
   display: block;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
   --media-object-fit: cover;
 }
