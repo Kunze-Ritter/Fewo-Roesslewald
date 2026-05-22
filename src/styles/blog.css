@@ -578,47 +578,30 @@
   color: var(--text-dark);
 }
 
-/* ─── Steps — nummerierte Anleitung ─────────────────────────────────
- * Bewusst freistehend, ohne Callout-Box. Große, schlanke Zahlen links
- * neben jedem Schritt — generiert via CSS-Counter, damit das Markup
- * ein semantisches <ol> ohne Boilerplate bleibt. Funktioniert gut für
- * 3–5 Schritte; bei mehr Schritten ggf. zweispaltig denken. */
-.prose__steps {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-s);
-}
-
-.prose__steps-title {
-  margin: 0;
-  font-family: var(--heading-font-family);
-  font-size: var(--text-l);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--text-dark);
-}
-
-.prose__steps-list {
-  counter-reset: prose-step;
+/* Ordered-List-Variante — greift auch auf jede `<ol>` innerhalb der
+ * Prose, sodass Gutenberg-Core-Listen automatisch das Styling
+ * übernehmen, ohne Custom-Block. Große, schlanke Zahlen via
+ * CSS-Counter — kein extra Markup nötig. */
+.prose__list--ordered,
+.prose ol {
+  counter-reset: prose-ol;
   list-style: none;
-  margin: 0;
-  padding: 0;
+  padding-inline-start: 0;
   display: grid;
   gap: var(--space-s);
 }
 
-.prose__steps-item {
+.prose__list--ordered > li,
+.prose ol > li {
   position: relative;
   padding-inline-start: 3.25rem;
-  min-block-size: 2.5rem;
-  display: flex;
-  align-items: center;
+  min-block-size: 2.25rem;
 }
 
-.prose__steps-item::before {
-  counter-increment: prose-step;
-  content: counter(prose-step, decimal-leading-zero);
+.prose__list--ordered > li::before,
+.prose ol > li::before {
+  counter-increment: prose-ol;
+  content: counter(prose-ol, decimal-leading-zero);
   position: absolute;
   inset-inline-start: 0;
   inset-block-start: -0.1em;
@@ -631,17 +614,7 @@
   opacity: 0.45;
 }
 
-.prose__steps-text {
-  font-size: var(--text-m);
-  line-height: 1.5;
-  color: var(--text-dark);
-}
-
-.prose__steps-note {
-  margin: 0;
-  padding-block-start: var(--space-xs);
-  border-block-start: 1px solid rgb(26 35 32 / 0.1);
-  font-size: var(--text-s);
+.prose__p--italic {
   font-style: italic;
   color: var(--text-dark-muted);
 }

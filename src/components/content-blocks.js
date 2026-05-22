@@ -6,14 +6,14 @@
  * läuft später über WP/Etch — wir brauchen nur eine schmale Brücke,
  * um den Prototypen authentisch zu zeigen.
  *
- * Unterstützte Block-Typen:
+ * Unterstützte Block-Typen — bewusst 1:1 mit Gutenberg-Core-Blöcken
+ * abbildbar, damit die spätere WP-Migration ohne Custom-Blocks läuft:
  *  - heading   { level: 2|3, text }
- *  - paragraph { text }
+ *  - paragraph { text, italic? }
  *  - image     { src, alt, caption? }
- *  - list      { items: string[] }            (ungeordnete Liste)
+ *  - list      { items: string[], ordered? }  (ul = unordered, ol = ordered)
  *  - callout   { title?, text }               (Tipp-/Hinweis-Box)
  *  - quote     { text, attribution? }
- *  - steps     { title?, items: string[], footnote? } (nummerierte Anleitung)
  */
 import { escHtml } from "./chrome.js";
 
@@ -23,7 +23,8 @@ function renderHeading(block) {
 }
 
 function renderParagraph(block) {
-  return `<p class="prose__p">${escHtml(block.text)}</p>`;
+  const cls = block.italic ? "prose__p prose__p--italic" : "prose__p";
+  return `<p class="${cls}">${escHtml(block.text)}</p>`;
 }
 
 function renderImage(block) {
@@ -43,7 +44,9 @@ function renderList(block) {
   const items = (block.items ?? [])
     .map((i) => `<li>${escHtml(i)}</li>`)
     .join("");
-  return `<ul class="prose__list">${items}</ul>`;
+  const tag = block.ordered ? "ol" : "ul";
+  const modifier = block.ordered ? " prose__list--ordered" : "";
+  return `<${tag} class="prose__list${modifier}">${items}</${tag}>`;
 }
 
 function renderCallout(block) {
@@ -70,31 +73,6 @@ function renderQuote(block) {
   `;
 }
 
-function renderSteps(block) {
-  const items = (block.items ?? [])
-    .map(
-      (text) => `
-      <li class="prose__steps-item">
-        <span class="prose__steps-text">${escHtml(text)}</span>
-      </li>
-    `,
-    )
-    .join("");
-  const title = block.title
-    ? `<p class="prose__steps-title">${escHtml(block.title)}</p>`
-    : "";
-  const footnote = block.footnote
-    ? `<p class="prose__steps-note">${escHtml(block.footnote)}</p>`
-    : "";
-  return `
-    <section class="prose__steps">
-      ${title}
-      <ol class="prose__steps-list">${items}</ol>
-      ${footnote}
-    </section>
-  `;
-}
-
 const RENDERERS = {
   heading: renderHeading,
   paragraph: renderParagraph,
@@ -102,7 +80,6 @@ const RENDERERS = {
   list: renderList,
   callout: renderCallout,
   quote: renderQuote,
-  steps: renderSteps,
 };
 
 /**
